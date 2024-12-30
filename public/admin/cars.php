@@ -176,10 +176,126 @@
 
        
 
-        <!-- Modal Edit -->
- 
+        <div id="carModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white h-[80%] rounded-lg w-[60%] p-6 overflow-y-auto">
+        <h2 class="text-2xl font-semibold mb-4">Add New Cars</h2>
+        <form id="carForm" action="../../app/actions/addCar.php" method="POST">
+            <div id="carsContainer" class="space-y-4">
+                <!-- First Car Fields -->
+                <div class="car-fields space-y-4">
+                    <h3 class="text-lg font-medium text-gray-800">Car 1</h3>
+                    <div class="flex flex-col">
+                        <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
+                        <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
+                        <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
+                        <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
+                        <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
+                        <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            <option value="1">Available</option>
+                            <option value="0">Not Available</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
+                        <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            <option value="">Select a Category</option>
+                            <option value="11">Super Car</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Hidden Input to Track Number of Cars -->
+            <input type="hidden" id="carCount" name="carCount" value="1">
+            
+            <div class="mt-4">
+                <button type="button" id="addCarButton" class="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Add Another Car</button>
+            </div>
 
+            <div class="mt-6 flex justify-end gap-4">
+                <button type="button" id="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">Submit Cars</button>
+            </div>
+        </form>
     </div>
+</div>
+
+<script>
+    // Get modal elements
+    const modal = document.getElementById('carModal');
+    const addCarButton = document.getElementById('add-etd');
+    const closeModalButton = document.getElementById('closeModal');
+    const carsContainer = document.getElementById('carsContainer');
+    const addAnotherCarButton = document.getElementById('addCarButton');
+    const carCountInput = document.getElementById('carCount');
+
+    let carCount = parseInt(carCountInput.value);
+
+    // Show modal
+    addCarButton.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    // Close modal
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    // Add another car
+    addAnotherCarButton.addEventListener('click', () => {
+        carCount += 1;
+        carCountInput.value = carCount;
+
+        const newCarFields = `
+        <div class="car-fields space-y-4">
+            <h3 class="text-lg font-medium text-gray-800">Car ${carCount}</h3>
+            <div class="flex flex-col">
+                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
+                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
+                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
+                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
+                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
+                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                    <option value="1">Available</option>
+                    <option value="0">Not Available</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
+                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                    <option value="">Select a Category</option>
+                    <option value="11">Super Car</option>
+                </select>
+            </div>
+        </div>`;
+
+        carsContainer.insertAdjacentHTML('beforeend', newCarFields);
+    });
+</script>
+
 
    
 </body>

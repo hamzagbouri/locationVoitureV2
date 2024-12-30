@@ -50,13 +50,47 @@
             <img class="w-32" src="../image/logo2.png" alt="logo">
         </div>
         <div class="">
-            <div class="grid gap-4 w-[100%]">
-                <a href="index.php" class="flex gap-4 px-4 py-2 rounded-2xl"><img src="./img/home.svg" alt=""> Dashboard </a>
-                <a href='cars.php' class='flex gap-4 px-4 py-2 rounded-2xl'><img src='./img/briefcase.svg' alt=''> Cars </a>
-                <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'><img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Reservations</a>
-                <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'><img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Avis</a>
+                <div class="grid gap-4 w-[100%]">
+                    <a href="index.php" class="flex gap-4 px-4 py-2 rounded-2xl">
+                        <img src="./img/home.svg" alt=""> Dashboard
+                    </a>
+                    <!-- Cars Link -->
+                    <div class="relative">
+                        <button class="flex gap-4 px-4 py-2 rounded-2xl w-full">
+                            <img src='./img/briefcase.svg' alt=''> Cars
+                        </button>
+                        <!-- Dropdown Options for Cars -->
+                        <div id="carsDropdown" class="hidden absolute left-0 mt-2 bg-white shadow-lg rounded-xl w-full">
+                            <a href="category.php" class="flex gap-4 px-4 py-2 rounded-2xl hover:bg-gray-100">
+                                <img src='./img/category.svg' alt=''> Categories
+                            </a>
+                            <a href="cars.php" class="flex gap-4 px-4 py-2 rounded-2xl hover:bg-gray-100">
+                                <img src='./img/car.svg' alt=''> Cars
+                            </a>
+                        </div>
+                    </div>
+                    <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
+                        <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Reservations
+                    </a>
+                    <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
+                        <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Avis
+                    </a>
             </div>
         </div>
+            <script>
+        const carsButton = document.querySelector('button');
+        const carsDropdown = document.getElementById('carsDropdown');
+
+        carsButton.addEventListener('click', () => {
+            carsDropdown.classList.toggle('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('div.relative')) {
+                carsDropdown.classList.add('hidden');
+            }
+        });
+    </script>
     </aside>
     <div class="grow">
         <header class=" h-20 border-b">
