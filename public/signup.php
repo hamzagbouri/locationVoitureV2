@@ -29,26 +29,26 @@
             </div>
         <?php endif; ?>
 
-        <form action="#" method="POST">
+        <form action="../app/actions/signup.php" method="POST">
             
             <div class="mb-4">
                 <label for="nom" class="block text-white mb-2">Nom d'utilisateur</label>
                 <div class=" bg-white/30 rounded-lg">
-                <input type="text" id="nom" name="nom_utilisateur" placeholder="Votre nom" class="w-full placeholder-white/80 bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
+                <input type="text" id="nom" name="fullName-signup" placeholder="Votre nom" class="w-full placeholder-white/80 bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
                 </div>            
             </div>
 
             <div class="mb-4">
                 <label for="email" class="block text-white mb-2">Email</label>
                 <div class=" bg-white/30 rounded-lg">
-                    <input type="email" id="email" name="email" placeholder="Votre email" class="placeholder-white/80 w-full bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
+                    <input type="email" id="email" name="email-signup" placeholder="Votre email" class="placeholder-white/80 w-full bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
                 </div>
             </div>
 
             <div class="mb-4">
                 <label for="password" class="block text-white mb-2">Mot de passe</label>
                 <div class=" bg-white/30 rounded-lg">
-                    <input type="password" id="mot_de_passe" name="mot_de_passe" placeholder="Votre mot de passe" class="w-full  placeholder-white/80 rounded-lg bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
+                    <input type="password" id="mot_de_passe" name="password-signup" placeholder="Votre mot de passe" class="w-full  placeholder-white/80 rounded-lg bg-transparent text-white flex-grow px-4 py-2 outline-none" required>
                 </div>
             </div>
             

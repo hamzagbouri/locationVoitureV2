@@ -68,8 +68,8 @@
                 <div class="flex w-72 justify-between  items-center ">
                     <img class="cursor-pointer" src="./img/settings.svg" alt="">
                     <img class="cursor-pointer" src="./img/Icon.svg" alt="">
-                    <form action="../../backend/actionsPHP/logout.php" action="post">
-                        <button><img src="img/logout.png" class="h-4 w-4" alt=""></button>
+                    <form action="../../app/actions/logout.php" action="POST">
+                        <button name="submit"><img src="img/logout.png" class="h-4 w-4" alt=""></button>
                     </form>
                     <div class="flex items-center gap-2 cursor-pointer">
                         <div class=" cursor-pointer w-10 h-10 bg-[url('img/Ana.jpg')] bg-cover rounded-full text-white relative ">

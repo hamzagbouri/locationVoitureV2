@@ -19,7 +19,7 @@
 <body class="flex items-center justify-center min-h-screen">
   <div class="bg-white/20 backdrop-blur-md p-6 rounded-lg shadow-lg w-full max-w-md">
     <h2 class="text-2xl font-semibold text-center mb-6 text-white">Login</h2>
-    <form action="login.php" method="POST">
+    <form action="../app/actions/login.php" method="POST">
     <?php if (!empty($error)): ?>
             <p class="text-red-500 text-center mb-4"><?= htmlspecialchars($error) ?></p>
         <?php endif; ?>
@@ -29,7 +29,7 @@
           <input
             type="text"
             id="username"
-            name="username"
+            name="email-login"
             placeholder="Username"
             class="bg-transparent text-white flex-grow px-4 placeholder-white/80 py-2 outline-none"
           />
@@ -44,7 +44,7 @@
           <input
             type="password"
             id="password"
-            name="password"
+            name="password-login"
             placeholder="Password"
             class="bg-transparent text-white flex-grow px-4 placeholder-white/80 py-2 outline-none"
           />

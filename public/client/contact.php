@@ -82,8 +82,9 @@ session_start();
                 </ul>
      
             <div>
-           <button class="px-4 py-2 bg-primary rounded-xl hover:bg-transparent hover:border hover:text-primary"><a href="../../backend/actionsPHP/logout.php">Logout</a></button>
-
+            <form action="../../app/actions/logout.php" method="post">
+                    <button class="px-4 py-2 bg-primary rounded-xl hover:bg-transparent hover:border hover:text-primary">Logout</button>
+                    </form>
                         </div>
         </nav>
         <div class="h-72 w-[100%] flex p-8 items-center justify-center ">

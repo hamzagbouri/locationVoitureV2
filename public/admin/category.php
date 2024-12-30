@@ -56,12 +56,11 @@
                     <a href="index.php" class="flex gap-4 px-4 py-2 rounded-2xl">
                         <img src="./img/home.svg" alt=""> Dashboard
                     </a>
-                    <!-- Cars Link -->
                     <div class="relative">
                         <button class="flex gap-4 px-4 py-2 rounded-2xl w-full">
                             <img src='./img/briefcase.svg' alt=''> Cars
                         </button>
-                        <!-- Dropdown Options for Cars -->
+                    
                         <div id="carsDropdown" class="hidden absolute left-0 mt-2 bg-white shadow-lg rounded-xl w-full">
                             <a href="category.php" class="flex gap-4 px-4 py-2 rounded-2xl hover:bg-gray-100">
                                 <img src='./img/category.svg' alt=''> Categories
@@ -142,7 +141,7 @@
                         </button>
                         <button id="add-etd" 
                             class="flex gap-2 items-center bg-primary px-4 py-2 rounded-lg text-white ">
-                            <img src="./img/_Avatar add button.svg" alt="">New Cars
+                            <img src="./img/_Avatar add button.svg" alt="">New Category
                         </button>
                     </div>
                 </div>
@@ -163,10 +162,30 @@
                         </div>
                     </div>
                 </div>
-                <div >
-                   
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!--Card 1 -->
+    <div class="bg-white rounded-lg shadow-md p-6 flex justify-between items-center">
+        <div class="flex-1">
+            <h3 class="text-xl font-semibold text-gray-800">Category Name 1</h3>
+        </div>
+        <div class="flex gap-4">
+       
+            <button class="text-blue-500 hover:text-blue-700">
+                <img src="./img/editinggh.png" alt="Edit" class="w-5 h-5">
+            </button>
+       
+            <button class="text-red-500 hover:text-red-700" >
+                <img src="./img/delete.png" alt="Delete" class="w-5 h-5">
+            </button>
+        </div>
+    </div>
 
-                </div>
+   
+
+   
+
+</div>
+
 
 
             </section>
@@ -175,13 +194,54 @@
     
 
        
-
-        <!-- Modal Edit -->
+        <div id="categoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white rounded-lg w-96 p-6">
+        <h2 class="text-2xl font-semibold mb-4">Add New Category</h2>
+        <form id="categoryForm">
+            <label for="categoryName" class="block text-sm font-medium text-gray-700">Category Name</label>
+            <input type="text" id="categoryName" name="categoryName" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter category name" required>
+            <div class="mt-6 flex justify-end gap-4">
+                <button type="button" id="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">Add Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+    
  
 
     </div>
 
-   
+    <script>
+    const modal = document.getElementById('categoryModal');
+    const addCategoryButton = document.getElementById('add-etd');
+    const closeModalButton = document.getElementById('closeModal');
+    const categoryForm = document.getElementById('categoryForm');
+
+    addCategoryButton.addEventListener('click', () => {
+        modal.classList.remove('hidden'); 
+    });
+
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.add('hidden'); 
+    });
+
+    categoryForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const categoryName = document.getElementById('categoryName').value;
+
+        console.log('Category Name:', categoryName);
+
+        modal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+</script>
+
 </body>
 
 </html>
