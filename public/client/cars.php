@@ -1,3 +1,9 @@
+<?php
+require_once '../../app/actions/getCar.php';
+$cars = getCar::getAllCars();
+require_once '../../app/actions/getCategory.php';
+$allCategories = getCategory::getAllCategories();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,72 +70,43 @@
     <?php include 'header.php';
 
     ?>
-    <section class="flex flex-col w-full h-full p-4 md:p-32 items-center justify-center text-black">
-        <h1 class="text-[50px] ">Our <span class='text-primary font-bold'>Menu</span></h1>
-    
-        <div class="flex flex-wrap h-[100%] w-[100%] justify-around gap-8 pt-8">
-           <?php
-            foreach($allMenu as $menu){
-                $allPlat = $con->query("SELECT * from plat inner join menu_plat on menu_plat.id_plat = plat.id inner join menu on menu_plat.id_menu = menu.id where menu.id = ".$menu['id']."");
-                echo " <div class='p-2 flex flex-col gap-2  w-[40%] h-full'>
-                <div>
-                    <div class='flex justify-center  '>
-                        <p
-                            class='border-t-2 border-r-2 border-l-2 px-2 flex text-center py-1 hover:border-primary hover:border-t-2 hover:border-r-2 hover:border-l-2'>
-                            ".$menu['titre']." : ".$menu['prix']."$</p>
-                    </div>
-                    <div
-                        class='border-t-2 flex flex-col border-b-2 hover:border-primary hover:border-t-2 hover:border-b-2 font-secondary '>
-                        ";
-                        foreach($allPlat as $plat)
-                        {
-                            $query = "SELECT * FROM image WHERE id = " . $plat['id_image'];
-                            $result2 = $con->query($query);
-                        
-                            if ($result2 && $result2->num_rows > 0) {
-                                $imageData = $result2->fetch_assoc();
-                                $image = $imageData['data']; 
-                                $imageType = $imageData['type']; 
-                        
-                               
-                                $base64Image = base64_encode($image);
-                                $imageSrc = "data:$imageType;base64,$base64Image";
-                            } 
-                        
-                        echo "
-                        <div class='flex flex-col py-2 md:flex-row'>
-                            <div class='w-[100%] md:w-[70%] flex flex-col items-center h-full '>
-                                <p><span class='text-gray-500 font-primary'>Plat:</span> {$plat['titre_plat']}</p>
-                                <h3><span class='text-gray-500 font-primary'>Categorie:&nbsp;</span>{$plat['categorie']}</h3>
-                            </div>
-                            <div class='w-[100%] md:w-[30%]'>
-                                <img class='h-20 w-full' src='$imageSrc' alt='Dish image'>
-                            </div>
-                        </div>";
-                    }
-                        echo "
 
-                    </div>
-                </div>
-            </div>";
-            }
-           ?>
+<section class="flex flex-col w-full h-full p-4 md:p-32 items-center justify-center text-black">
+    <h1 class="text-[50px] ">Our <span class='text-primary font-bold'>Cars</span></h1>
 
+    <!-- Filters Section -->
+    <div class="flex flex-wrap gap-8 pt-8 w-full justify-center">
+        <!-- Search Input -->
+        <div class="w-full sm:w-1/3 md:w-1/4">
+            <input type="text" id="carSearch" placeholder="Search for cars..." class="w-full p-2 border rounded-md shadow-sm" />
         </div>
+        <!-- Category Filter -->
+        <div class="w-full sm:w-1/3 md:w-1/4">
+            <select id="categoryFilter" onchange="filterCars(<?php echo $cat['id'] ?>)" class="w-full p-2 border rounded-md shadow-sm">
+                <option value="">Select Category</option>
+                <?php 
+                            foreach($allCategories as $cat)
+                            echo "<option value='".$cat['id']."'>".$cat['nom']."</option>"
+                            ?>
+            </select>
         </div>
+    </div>
 
-    </section>
+    <!-- Cards Section -->
+    <div class="flex flex-wrap h-[100%] w-[100%] justify-around gap-8 pt-8" id="carCards">
+        <!-- Car Cards (Example) -->
+      
+          
+       
+
+        <!-- Add more cards as needed -->
+    </div>
+</section>
 
     <?php include 'footer.php'  ;?>
-    <script>
-        function openBookModal() {
-            <?php
-                if (!isset($_SESSION['id_logged'])) {
-                header('Location: Gestion Restaurant/frontend/index.php');
-            }
-                ?>
-                console.log('aa')
-        }
+    <script src="cars.js">
+        
+
     </script>
 
 </body>

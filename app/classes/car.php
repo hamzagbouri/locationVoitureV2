@@ -16,7 +16,7 @@ class Car {
         $this->annee = $annee;
         $this->prix = $prix;
         $this->disponibilite = $disponibilite;
-        $this->category_id = 1;
+        $this->category_id = $category_id;
         $this->image_path = $image_path; 
     }
 
@@ -81,5 +81,20 @@ class Car {
             return 406;
         }
     }
+    public static function searchCarByModele($pdo, $modele)
+{
+    try {
+        $modeleWithWildcards = "%" . $modele . "%";
+        
+        $stmt = $pdo->prepare("SELECT * FROM car WHERE modele LIKE ?");
+        $stmt->execute([$modeleWithWildcards]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    } catch (Exception $e) {
+        return ['error' => 405, 'message' => $e->getMessage()];
+    }
+}
+
 }
 ?>

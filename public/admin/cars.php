@@ -2,6 +2,8 @@
 <?php 
 require_once '../../app/actions/getCar.php';
 $cars = getCar::getAllCars();
+require_once '../../app/actions/getCategory.php';
+$allCategories = getCategory::getAllCategories();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -346,8 +348,11 @@ $cars = getCar::getAllCars();
                     <div class="flex flex-col">
                         <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
                         <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                            <option value="">Select a Category</option>
-                            <option value="1">Super Car</option>
+                            <option value="" checked disabled>Select a Category</option>
+                            <?php 
+                            foreach($allCategories as $cat)
+                            echo "<option value='".$cat['id']."'>".$cat['nom']."</option>"
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -416,8 +421,11 @@ $cars = getCar::getAllCars();
                             <div class="flex flex-col">
                                 <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
                                 <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                                    <option value="">Select a Category</option>
-                                    <option value="11">Super Car</option>
+                                  <option value="" checked disabled>Select a Category</option>
+                                    <?php 
+                                    foreach($allCategories as $cat)
+                                    echo "<option value='".$cat['id']."'>".$cat['nom']."</option>"
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -474,8 +482,11 @@ $cars = getCar::getAllCars();
                             <div class="flex flex-col">
                                 <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
                                 <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                                    <option value="">Select a Category</option>
-                                    <option value="11">Super Car</option>
+                                   <option value="" checked disabled>Select a Category</option>
+                                            <?php 
+                                            foreach($allCategories as $cat)
+                                            echo "<option value='".$cat['id']."'>".$cat['nom']."</option>"
+                                            ?>
                                 </select>
                             </div>
                         </div>`;
