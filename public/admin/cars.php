@@ -1,4 +1,8 @@
 
+<?php 
+require_once '../../app/actions/getCar.php';
+$cars = getCar::getAllCars();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -163,10 +167,138 @@
                         </div>
                     </div>
                 </div>
-                <div >
-                   
-
+                      
+                <div id="carModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+                    <div class="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2 p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 id="modal-title" class="text-xl font-bold">Car Details</h2>
+                            <button onclick="closeModal()" class="text-red-500 font-bold text-xl">&times;</button>
+                        </div>
+                        <div id="modal-content" class="mt-4">
+                            
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Close</button>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Car Display Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($cars as $car): ?>
+                        <div class="border rounded-lg shadow-lg overflow-hidden">
+                            <img src="<?= htmlspecialchars('../../app/'.$car['image_path']) ?>" alt="<?= htmlspecialchars($car['marque']) ?>" class="w-full h-48 object-contain">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold"><?= htmlspecialchars($car['marque']) ?> <?= htmlspecialchars($car['modele']) ?></h3>
+                                <p class="text-sm text-gray-600">Price: $<?= number_format($car['prix'], 2) ?></p>
+                                <p class="text-sm <?= $car['disponibilite'] ? 'text-green-600' : 'text-red-600' ?>">
+                                    <?= $car['disponibilite'] ? 'Available' : 'Not Available' ?>
+                                </p>
+                                <div class="mt-4 flex justify-between">
+                                    <button onclick="showCarModal(<?= htmlspecialchars(json_encode($car)) ?>)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">View</button>
+                                    <button onclick="openEditModal(<?= htmlspecialchars(json_encode($car)) ?>)" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">Edit</button>
+                                    <form action="deleteCar.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this car?');">
+                                        <input type="hidden" name="id" value="<?= $car['id'] ?>">
+                                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div id="editCarModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+                    <div class="bg-white h-[80%] overflow-y-auto rounded-lg w-11/12 md:w-2/3 lg:w-1/2 p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 id="edit-modal-title" class="text-xl font-bold">Edit Car</h2>
+                            <button onclick="closeEditModal()" class="text-red-500 font-bold text-xl">&times;</button>
+                        </div>
+                        <form id="editCarForm" action="../../app/actions/editCar.php" method="POST" class="mt-4">
+                            <input type="hidden" id="edit-car-id" name="id">
+                            <div class="mb-4">
+                                <label for="current-image" class="block text-sm font-medium text-gray-700">Current Image</label>
+                                <img id="current-image" src="" alt="Current Car Image" class="w-32 h-32 object-conatin">
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-image" class="block text-sm font-medium text-gray-700">New Image (Optional)</label>
+                                <input type="file" id="edit-image" name="image" accept="image/*" class="w-full p-2 border rounded-lg">
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-marque" class="block text-sm font-medium text-gray-700">Marque</label>
+                                <input type="text" id="edit-marque" name="marque" class="w-full p-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-modele" class="block text-sm font-medium text-gray-700">Modele</label>
+                                <input type="text" id="edit-modele" name="modele" class="w-full p-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-annee" class="block text-sm font-medium text-gray-700">Year</label>
+                                <input type="number" id="edit-annee" name="annee" class="w-full p-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-prix" class="block text-sm font-medium text-gray-700">Price</label>
+                                <input type="number" id="edit-prix" name="prix" step="0.01" class="w-full p-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-disponibilite" class="block text-sm font-medium text-gray-700">Disponibility</label>
+                                <select id="edit-disponibilite" name="disponibilite" class="w-full p-2 border rounded-lg">
+                                    <option value="1">Available</option>
+                                    <option value="0">Not Available</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="edit-category-id" class="block text-sm font-medium text-gray-700">Category ID</label>
+                                <select name="category_id" id="edit-category-id" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            <option value="">Select a Category</option>
+                            <option value="1">Super Car</option>
+                        </select>                            </div>
+                            <div class="mt-4 flex justify-end">
+                                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 mr-2">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Modify Car</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+               
+                <script>
+                   function openEditModal(car) {
+                        document.getElementById('edit-car-id').value = car.id;
+                        document.getElementById('edit-marque').value = car.marque;
+                        document.getElementById('edit-modele').value = car.modele;
+                        document.getElementById('edit-annee').value = car.annee;
+                        document.getElementById('edit-prix').value = car.prix;
+                        document.getElementById('edit-disponibilite').value = car.disponibilite;
+                        document.getElementById('edit-category-id').value = car.category_id;
+                        document.getElementById('current-image').src = '../../app/' + car.image_path;
+                        document.getElementById('editCarModal').classList.remove('hidden');
+                    }
+
+                    function closeEditModal() {
+                        document.getElementById('editCarModal').classList.add('hidden');
+                    }
+
+                function showCarModal(car) {
+                    console.log(car)
+                    
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalContent = document.getElementById('modal-content');
+                    
+                    modalTitle.textContent = `${car.marque} ${car.modele}`;
+                    modalContent.innerHTML = `
+                        <img src="../../app/${car.image_path}" alt="${car.marque}" class="w-full h-48 object-contain mb-4">
+                        <p><strong>Price:</strong> $${Number(car.prix).toLocaleString()}</p>
+                        <p><strong>Availability:</strong> ${car.disponibilite ? 'Available' : 'Not Available'}</p>
+                        <p><strong>Year:</strong> ${car.annee}</p>
+                        <p><strong>Category ID:</strong> ${car.category_id}</p>
+                    `;
+                    
+                    document.getElementById('carModal').classList.remove('hidden');
+                }
+
+                function closeModal() {
+                    document.getElementById('carModal').classList.add('hidden');
+                }
+                </script>
+
 
 
             </section>
@@ -179,7 +311,7 @@
         <div id="carModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
     <div class="bg-white h-[80%] rounded-lg w-[60%] p-6 overflow-y-auto">
         <h2 class="text-2xl font-semibold mb-4">Add New Cars</h2>
-        <form id="carForm" action="../../app/actions/addCar.php" method="POST">
+        <form id="carForm" action="../../app/actions/addCar.php" method="POST" enctype="multipart/form-data">
             <div id="carsContainer" class="space-y-4">
                 <!-- First Car Fields -->
                 <div class="car-fields space-y-4">
@@ -201,6 +333,10 @@
                         <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
                     </div>
                     <div class="flex flex-col">
+                        <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
+                        <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                    </div>
+                    <div class="flex flex-col">
                         <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
                         <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
                             <option value="1">Available</option>
@@ -211,7 +347,7 @@
                         <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
                         <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
                             <option value="">Select a Category</option>
-                            <option value="11">Super Car</option>
+                            <option value="1">Super Car</option>
                         </select>
                     </div>
                 </div>
@@ -225,39 +361,88 @@
 
             <div class="mt-6 flex justify-end gap-4">
                 <button type="button" id="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">Submit Cars</button>
+                <button type="submit" name="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">Submit Cars</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    // Get modal elements
-    const modal = document.getElementById('carModal');
-    const addCarButton = document.getElementById('add-etd');
-    const closeModalButton = document.getElementById('closeModal');
-    const carsContainer = document.getElementById('carsContainer');
-    const addAnotherCarButton = document.getElementById('addCarButton');
-    const carCountInput = document.getElementById('carCount');
+  // Get modal elements
+const modal = document.getElementById('carModal');
+const addCarButton = document.getElementById('add-etd');
+const closeModalButton = document.getElementById('closeModal');
+const carsContainer = document.getElementById('carsContainer');
+const addAnotherCarButton = document.getElementById('addCarButton');
+const carCountInput = document.getElementById('carCount');
 
-    let carCount = parseInt(carCountInput.value);
+let carCount = 1;
 
-    // Show modal
-    addCarButton.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-    });
+// Function to reset the modal to its initial state
+function resetModal() {
+    carCount = 1;
+    carCountInput.value = carCount;
 
-    // Close modal
-    closeModalButton.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
+    // Reset to only the first set of inputs
+    carsContainer.innerHTML = `
+        <div class="car-fields space-y-4">
+            <h3 class="text-lg font-medium text-gray-800">Car 1</h3>
+            <div class="flex flex-col">
+                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
+                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
+                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
+                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
+                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
+            </div>
+             <div class="flex flex-col">
+                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
+                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
+                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                    <option value="1">Available</option>
+                    <option value="0">Not Available</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
+                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                    <option value="">Select a Category</option>
+                    <option value="11">Super Car</option>
+                </select>
+            </div>
+        </div>
+    `;
+}
 
-    // Add another car
-    addAnotherCarButton.addEventListener('click', () => {
-        carCount += 1;
-        carCountInput.value = carCount;
+// Show modal
+addCarButton.addEventListener('click', () => {
+    resetModal(); // Reset modal when showing it
+    modal.classList.remove('hidden');
+});
 
-        const newCarFields = `
+// Close modal
+closeModalButton.addEventListener('click', () => {
+    resetModal(); // Reset modal when closing it
+    modal.classList.add('hidden');
+});
+
+// Add another car
+addAnotherCarButton.addEventListener('click', () => {
+    carCount += 1;
+    carCountInput.value = carCount;
+
+    const newCarFields = `
         <div class="car-fields space-y-4">
             <h3 class="text-lg font-medium text-gray-800">Car ${carCount}</h3>
             <div class="flex flex-col">
@@ -277,6 +462,10 @@
                 <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
             </div>
             <div class="flex flex-col">
+                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
+                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+            </div>
+            <div class="flex flex-col">
                 <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
                 <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
                     <option value="1">Available</option>
@@ -292,8 +481,9 @@
             </div>
         </div>`;
 
-        carsContainer.insertAdjacentHTML('beforeend', newCarFields);
-    });
+    carsContainer.insertAdjacentHTML('beforeend', newCarFields);
+});
+
 </script>
 
 
