@@ -49,7 +49,7 @@ class Car {
             $stmt->execute([$id]);
             return 202;
         } catch(Exception $e) {
-            return 403;
+            return false;
         }
     }
 

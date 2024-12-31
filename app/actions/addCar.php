@@ -25,19 +25,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                 continue;
             }
     
-            // Validate file type and size
-            $allowedTypes = ['image/jpeg', 'image/png'];
-            $maxSize = 5 * 1024 * 1024; 
-    
-            if (!in_array($_FILES['image']['type'][$i], $allowedTypes)) {
-                echo "Invalid file type for image $i.<br>";
-                continue;
-            }
-    
-            if ($_FILES['image']['size'][$i] > $maxSize) {
-                echo "File size too large for image $i.<br>";
-                continue;
-            }
             $fileName = uniqid() . '-' . basename($_FILES['image']['name'][$i]);
             $uploadFile = $uploadDir . $fileName;
             $uploadFile2 = '../'.$uploadDir . $fileName;

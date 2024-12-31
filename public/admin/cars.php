@@ -83,20 +83,20 @@ $cars = getCar::getAllCars();
                     </a>
             </div>
         </div>
-            <script>
-        const carsButton = document.querySelector('button');
-        const carsDropdown = document.getElementById('carsDropdown');
+                <script>
+            const carsButton = document.querySelector('button');
+            const carsDropdown = document.getElementById('carsDropdown');
 
-        carsButton.addEventListener('click', () => {
-            carsDropdown.classList.toggle('hidden');
-        });
+            carsButton.addEventListener('click', () => {
+                carsDropdown.classList.toggle('hidden');
+            });
 
-        window.addEventListener('click', (e) => {
-            if (!e.target.closest('div.relative')) {
-                carsDropdown.classList.add('hidden');
-            }
-        });
-    </script>
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('div.relative')) {
+                    carsDropdown.classList.add('hidden');
+                }
+            });
+        </script>
 
 
         </aside>
@@ -197,9 +197,9 @@ $cars = getCar::getAllCars();
                                 <div class="mt-4 flex justify-between">
                                     <button onclick="showCarModal(<?= htmlspecialchars(json_encode($car)) ?>)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">View</button>
                                     <button onclick="openEditModal(<?= htmlspecialchars(json_encode($car)) ?>)" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">Edit</button>
-                                    <form action="deleteCar.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this car?');">
-                                        <input type="hidden" name="id" value="<?= $car['id'] ?>">
-                                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>
+                                    <form action="../../app/actions/deleteCar.php" method="POST" >
+                                        <input type="hidden" name="id-car" value="<?= $car['id'] ?>">
+                                        <button type="submit" name="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>
                                     </form>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@ $cars = getCar::getAllCars();
                             <h2 id="edit-modal-title" class="text-xl font-bold">Edit Car</h2>
                             <button onclick="closeEditModal()" class="text-red-500 font-bold text-xl">&times;</button>
                         </div>
-                        <form id="editCarForm" action="../../app/actions/editCar.php" method="POST" class="mt-4">
+                        <form id="editCarForm" action="../../app/actions/editCar.php" method="POST" class="mt-4" enctype="multipart/form-data">
                             <input type="hidden" id="edit-car-id" name="id">
                             <div class="mb-4">
                                 <label for="current-image" class="block text-sm font-medium text-gray-700">Current Image</label>
@@ -308,7 +308,7 @@ $cars = getCar::getAllCars();
 
        
 
-        <div id="carModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div id="carModal-add" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
     <div class="bg-white h-[80%] rounded-lg w-[60%] p-6 overflow-y-auto">
         <h2 class="text-2xl font-semibold mb-4">Add New Cars</h2>
         <form id="carForm" action="../../app/actions/addCar.php" method="POST" enctype="multipart/form-data">
@@ -352,7 +352,6 @@ $cars = getCar::getAllCars();
                     </div>
                 </div>
             </div>
-            <!-- Hidden Input to Track Number of Cars -->
             <input type="hidden" id="carCount" name="carCount" value="1">
             
             <div class="mt-4">
@@ -367,124 +366,124 @@ $cars = getCar::getAllCars();
     </div>
 </div>
 
-<script>
-  // Get modal elements
-const modal = document.getElementById('carModal');
-const addCarButton = document.getElementById('add-etd');
-const closeModalButton = document.getElementById('closeModal');
-const carsContainer = document.getElementById('carsContainer');
-const addAnotherCarButton = document.getElementById('addCarButton');
-const carCountInput = document.getElementById('carCount');
+                <script>
+                // Get modal elements
+                const modal = document.getElementById('carModal-add');
+                const addCarButton = document.getElementById('add-etd');
+                const closeModalButton = document.getElementById('closeModal');
+                const carsContainer = document.getElementById('carsContainer');
+                const addAnotherCarButton = document.getElementById('addCarButton');
+                const carCountInput = document.getElementById('carCount');
 
-let carCount = 1;
+                let carCount = 1;
 
-// Function to reset the modal to its initial state
-function resetModal() {
-    carCount = 1;
-    carCountInput.value = carCount;
+                // Function to reset the modal to its initial state
+                function resetModal() {
+                    carCount = 1;
+                    carCountInput.value = carCount;
 
-    // Reset to only the first set of inputs
-    carsContainer.innerHTML = `
-        <div class="car-fields space-y-4">
-            <h3 class="text-lg font-medium text-gray-800">Car 1</h3>
-            <div class="flex flex-col">
-                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
-                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
-                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
-                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
-                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
-            </div>
-             <div class="flex flex-col">
-                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
-                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
-                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    <option value="1">Available</option>
-                    <option value="0">Not Available</option>
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
-                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    <option value="">Select a Category</option>
-                    <option value="11">Super Car</option>
-                </select>
-            </div>
-        </div>
-    `;
-}
+                    // Reset to only the first set of inputs
+                    carsContainer.innerHTML = `
+                        <div class="car-fields space-y-4">
+                            <h3 class="text-lg font-medium text-gray-800">Car 1</h3>
+                            <div class="flex flex-col">
+                                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
+                                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
+                                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
+                                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
+                                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
+                                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
+                                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                    <option value="1">Available</option>
+                                    <option value="0">Not Available</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
+                                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                    <option value="">Select a Category</option>
+                                    <option value="11">Super Car</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                }
 
-// Show modal
-addCarButton.addEventListener('click', () => {
-    resetModal(); // Reset modal when showing it
-    modal.classList.remove('hidden');
-});
+                // Show modal
+                addCarButton.addEventListener('click', () => {
+                    resetModal(); // Reset modal when showing it
+                    modal.classList.remove('hidden');
+                });
 
-// Close modal
-closeModalButton.addEventListener('click', () => {
-    resetModal(); // Reset modal when closing it
-    modal.classList.add('hidden');
-});
+                // Close modal
+                closeModalButton.addEventListener('click', () => {
+                    resetModal(); // Reset modal when closing it
+                    modal.classList.add('hidden');
+                });
 
-// Add another car
-addAnotherCarButton.addEventListener('click', () => {
-    carCount += 1;
-    carCountInput.value = carCount;
+                // Add another car
+                addAnotherCarButton.addEventListener('click', () => {
+                    carCount += 1;
+                    carCountInput.value = carCount;
 
-    const newCarFields = `
-        <div class="car-fields space-y-4">
-            <h3 class="text-lg font-medium text-gray-800">Car ${carCount}</h3>
-            <div class="flex flex-col">
-                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
-                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
-                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
-                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
-                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
-                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-            </div>
-            <div class="flex flex-col">
-                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
-                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    <option value="1">Available</option>
-                    <option value="0">Not Available</option>
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
-                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    <option value="">Select a Category</option>
-                    <option value="11">Super Car</option>
-                </select>
-            </div>
-        </div>`;
+                    const newCarFields = `
+                        <div class="car-fields space-y-4">
+                            <h3 class="text-lg font-medium text-gray-800">Car ${carCount}</h3>
+                            <div class="flex flex-col">
+                                <label for="marque" class="text-sm font-medium text-gray-700">Marque</label>
+                                <input type="text" name="marque[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter marque" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="modele" class="text-sm font-medium text-gray-700">Modele</label>
+                                <input type="text" name="modele[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter modele" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="annee" class="text-sm font-medium text-gray-700">Annee</label>
+                                <input type="number" name="annee[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter annee" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="prix" class="text-sm font-medium text-gray-700">Prix</label>
+                                <input type="number" name="prix[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter prix" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="image" class="text-sm font-medium text-gray-700">Car Image</label>
+                                <input type="file" name="image[]" accept="image/*" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="disponibilite" class="text-sm font-medium text-gray-700">Disponibilite</label>
+                                <select name="disponibilite[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                    <option value="1">Available</option>
+                                    <option value="0">Not Available</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="category_id" class="text-sm font-medium text-gray-700">Category</label>
+                                <select name="category_id[]" class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                    <option value="">Select a Category</option>
+                                    <option value="11">Super Car</option>
+                                </select>
+                            </div>
+                        </div>`;
 
-    carsContainer.insertAdjacentHTML('beforeend', newCarFields);
-});
+                    carsContainer.insertAdjacentHTML('beforeend', newCarFields);
+                });
 
-</script>
+                </script>
 
 
    

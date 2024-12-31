@@ -12,6 +12,7 @@ require_once('../classes/database.php');
         $prix = $_POST['prix'];
         $disponibilite = $_POST['disponibilite'];
         $category_id = $_POST['category_id'];
+    
 
         $dbInstance = Database::getInstance();
         $pdo = $dbInstance->getConnection();
@@ -26,10 +27,8 @@ require_once('../classes/database.php');
             }
 
        
-            $allowedTypes = ['image/jpeg', 'image/png'];
-            
-
-            if (in_array($_FILES['image']['type'], $allowedTypes) ) {
+          
+          
                 $fileName = uniqid() . '-' . basename($_FILES['image']['name']);
                 $uploadFile = $uploadDir . $fileName;
                 $uploadFile2 = '../' . $uploadDir . $fileName;
@@ -39,9 +38,7 @@ require_once('../classes/database.php');
                 } else {
                     echo "Failed to upload image.";
                 }
-            } else {
-                echo "Invalid file type or size.";
-            }
+           
         }
 
        
