@@ -10,10 +10,5 @@ class getCategory {
         $categories = Category::getAllCategories($pdo);
         return $categories;
     }
-    
-
-    
-    
-
 }
 ?>
