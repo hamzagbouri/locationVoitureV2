@@ -82,7 +82,7 @@ class Car {
         }
     }
     public static function searchCarByModele($pdo, $modele)
-{
+    {
     try {
         $modeleWithWildcards = "%" . $modele . "%";
         
@@ -94,7 +94,8 @@ class Car {
     } catch (Exception $e) {
         return ['error' => 405, 'message' => $e->getMessage()];
     }
-}
+    }
+    
 
 }
 ?>

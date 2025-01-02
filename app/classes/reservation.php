@@ -20,12 +20,12 @@ class Reservation {
 
     public function createReservation($pdo) {
         try {
-        $stmt = $pdo->prepare("INSERT INTO Reservation (date_reservation, date_debut, date_fin, lieu, client_id, car_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$this->date_reservation, $this->date_debut, $this->date_fin, $this->lieu, $this->client_id, $this->car_id]);
+        $stmt = $pdo->prepare("INSERT INTO Reservation ( date_debut, date_fin, lieu, client_id, car_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$this->date_debut, $this->date_fin, $this->lieu, $this->client_id, $this->car_id]);
         return 202;
     } catch(Exception $e)
     {
-        return 404;
+        return $e->getMessage();
     }
     }
 
@@ -76,6 +76,11 @@ class Reservation {
     {
         return 404;
     }
+    }
+    public static function verifierDisponibilte($pdo,$idCar,$date_debut,$date_fin){
+        $stmt = $pdo->prepare("SELECT * FROM reservation WHERE car_id = :carId AND ((:date_debut BETWEEN date_debut AND date_fin) OR (:date_fin BETWEEN date_debut AND date_fin) OR(date_debut BETWEEN :date_debut AND :date_fin) OR (date_fin BETWEEN :date_debut AND :date_fin) )");   
+        $stmt ->execute([':carId' => $idCar, ':date_debut'=>$date_debut, ':date_fin'=>$date_fin]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

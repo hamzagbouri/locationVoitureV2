@@ -25,10 +25,6 @@ document.getElementById("categoryFilter").addEventListener('change', function(){
                         <p class="text-gray-600">Category: ${element.category}</p>
                         <p class="text-gray-600">Year: ${element.annee}</p>
                         <p class="text-gray-600">Price: $${element.prix}</p>
-                        <p class="text-gray-600">Restantes: ${element.restantes}</p>
-                        ${element.disponibilite === "1" 
-                            ? `<p class="text-green-600 font-semibold">Available</p>` 
-                            : `<p class="text-red-600 font-semibold">Not Available</p>`}
     
                         <!-- Book Button -->
                         <button 
@@ -77,10 +73,8 @@ document.getElementById('carSearch').addEventListener('keyup', function(){
                             <p class="text-gray-600">Category: ${element.category}</p>
                             <p class="text-gray-600">Year: ${element.annee}</p>
                             <p class="text-gray-600">Price: $${element.prix}</p>
-                            <p class="text-gray-600">Restantes: ${element.restantes}</p>
-                            ${element.disponibilite === "1" 
-                                ? `<p class="text-green-600 font-semibold">Available</p>` 
-                                : `<p class="text-red-600 font-semibold">Not Available</p>`}
+                            
+                          
         
                             <!-- Book Button -->
                             <button 
@@ -117,10 +111,8 @@ fetch('../../app/actions/getAllCars.php')
                         <p class="text-gray-600">Category: ${element.category}</p>
                         <p class="text-gray-600">Year: ${element.annee}</p>
                         <p class="text-gray-600">Price: $${element.prix}</p>
-                        <p class="text-gray-600">Restantes: ${element.restantes}</p>
-                        ${element.disponibilite === "1" 
-                            ? `<p class="text-green-600 font-semibold">Available</p>` 
-                            : `<p class="text-red-600 font-semibold">Not Available</p>`}
+                        
+                    
     
                         <!-- Book Button -->
                         <button 

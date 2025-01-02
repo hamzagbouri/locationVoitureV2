@@ -74,13 +74,10 @@ $allCategories = getCategory::getAllCategories();
 <section class="flex flex-col w-full h-full p-4 md:p-32 items-center justify-center text-black">
     <h1 class="text-[50px] ">Our <span class='text-primary font-bold'>Cars</span></h1>
 
-    <!-- Filters Section -->
     <div class="flex flex-wrap gap-8 pt-8 w-full justify-center">
-        <!-- Search Input -->
         <div class="w-full sm:w-1/3 md:w-1/4">
             <input type="text" id="carSearch" placeholder="Search for cars..." class="w-full p-2 border rounded-md shadow-sm" />
         </div>
-        <!-- Category Filter -->
         <div class="w-full sm:w-1/3 md:w-1/4">
             <select id="categoryFilter" onchange="filterCars(<?php echo $cat['id'] ?>)" class="w-full p-2 border rounded-md shadow-sm">
                 <option value="">Select Category</option>
@@ -92,14 +89,13 @@ $allCategories = getCategory::getAllCategories();
         </div>
     </div>
 
-    <!-- Cards Section -->
     <div class="flex flex-wrap h-[100%] w-[100%] justify-around gap-8 pt-8" id="carCards">
-        <!-- Car Cards (Example) -->
+       
       
           
        
 
-        <!-- Add more cards as needed -->
+      
     </div>
 </section>
 

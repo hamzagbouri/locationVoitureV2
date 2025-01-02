@@ -1,4 +1,5 @@
 <?php 
+
 require_once('../classes/User.php');
 require_once('../classes/database.php');
 
@@ -22,6 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             }else{
                 header("Location: ../../public/client/home.php");
             }
+
         
         }else if($result == 404) {
             $_SESSION['error'] = 'This User is banned!!';

@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         $disponibilite = (($_POST['disponibilite']));
         $categoryId = (($_POST['category_id']));
         $carCount = $_POST['carCount'];
-        echo $carCount;
+        
         $dbInstance = Database::getInstance();
         $pdo = $dbInstance->getConnection();
         $uploadDir = 'uploads/'; 
