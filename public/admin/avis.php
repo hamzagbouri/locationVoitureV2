@@ -1,4 +1,7 @@
-
+<?php
+    require_once '../../app/actions/getAvis.php';
+    $avis = getAvis::getAllAvis();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,12 +57,12 @@
                     <a href="index.php" class="flex gap-4 px-4 py-2 rounded-2xl">
                         <img src="./img/home.svg" alt=""> Dashboard
                     </a>
-                    <!-- Cars Link -->
+                
                     <div class="relative">
                         <button class="flex gap-4 px-4 py-2 rounded-2xl w-full">
                             <img src='./img/briefcase.svg' alt=''> Cars
                         </button>
-                        <!-- Dropdown Options for Cars -->
+                   
                         <div id="carsDropdown" class="hidden absolute left-0 mt-2 bg-white shadow-lg rounded-xl w-full">
                             <a href="category.php" class="flex gap-4 px-4 py-2 rounded-2xl hover:bg-gray-100">
                                 <img src='./img/category.svg' alt=''> Categories
@@ -153,12 +156,47 @@
                     </div>
                </div>
             </div>
-            <div class="flex w-full flex-wrap gap-2 justify-around ">
-             
-               
-             
+            <div class="flex w-full flex-wrap gap-4 justify-around bg-gray-100 p-4 rounded-md">
+    <?php foreach ($avis as $review): ?>
+        <div class="w-full sm:w-1/3 md:w-1/4 bg-white rounded-lg shadow-md p-4">
+            <div class="flex flex-col items-start">
 
+                <div class="flex mb-2">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                        <span class="text-yellow-500">
+                            <?= $i < $review['stars'] ? '★' : '☆'; ?>
+                        </span>
+                    <?php endfor; ?>
+                </div>
+
+                <p class="text-gray-700 mb-4">
+                    <?= htmlspecialchars($review['avis'], ENT_QUOTES, 'UTF-8'); ?>
+                </p>
+
+                <form action="../../app/actions/deleteReview.php" method="POST" class="w-full">
+                    <input type="hidden" name="avisId" value="<?= $review['id']; ?>">
+                    <?php
+                    if ($review['archive']) {
+                ?>
+                        <button type="submit" name="unarchive" class="w-full py-2 px-4 text-white font-semibold rounded-md bg-green-500 hover:bg-green-600">
+                            Unarchive
+                        </button>
+                <?php
+                    } else {
+                ?>
+                        <button type="submit" name="archive" class="w-full py-2 px-4 text-white font-semibold rounded-md bg-red-500 hover:bg-red-600">
+                            Archive
+                        </button>
+                <?php
+                    }
+                ?>
+
+                </form>
             </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
  
           
         </section>

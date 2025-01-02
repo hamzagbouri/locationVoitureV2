@@ -49,3 +49,23 @@ CREATE TABLE Avis (
 ALTER TABLE Avis ADD COLUMN stars TINYINT CHECK (stars BETWEEN 1 AND 5);
 ALTER TABLE Avis ADD COLUMN archive BOOLEAN DEFAULT FALSE;
 ALTER TABLE Car ADD COLUMN image_path VARCHAR(255);
+
+CREATE VIEW CarsView AS
+SELECT c.id as car_id, c.image_path, c.modele,c.marque,c.annee,c.prix,cat.nom 
+FROM Car c
+JOIN category cat ON c.category_id = cat.id;
+DELIMITER //
+
+CREATE PROCEDURE AjouterReservation(
+    IN p_date_debut DATE,
+    IN p_date_fin DATE,
+    IN p_lieu VARCHAR(255),
+    IN p_client_id INT,
+    IN p_car_id INT
+)
+BEGIN
+    INSERT INTO Reservation (date_debut, date_fin, lieu, client_id, car_id)
+    VALUES (p_date_debut, p_date_fin, p_lieu, p_client_id, p_car_id);
+END //
+
+DELIMITER ;

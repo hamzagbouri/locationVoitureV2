@@ -80,7 +80,7 @@ $allCategories = getCategory::getAllCategories();
                     <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
                         <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Reservations
                     </a>
-                    <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
+                    <a href='avis.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
                         <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Avis
                     </a>
             </div>

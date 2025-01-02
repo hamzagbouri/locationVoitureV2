@@ -81,6 +81,14 @@ class Car {
             return 406;
         }
     }
+    public static function getAllCarsFromView($pdo) {
+        try {
+            $stmt = $pdo->query("SELECT * FROM carsview");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(Exception $e) {
+            return 406;
+        }
+    }
     public static function searchCarByModele($pdo, $modele)
     {
     try {

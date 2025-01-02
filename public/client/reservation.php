@@ -1,5 +1,14 @@
 
+<?php
+session_start();
+require_once '../../app/actions/getReservations.php';
+require_once '../../app/actions/getCar.php';
+require_once '../../app/actions/getAvis.php';
+$id = $_SESSION['id'];
+$allReservations = getReservations::getReservationByUserId($id);
 
+$id = $_SESSION['id'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,40 +90,53 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 ">
 
             <?php
-                if($allReservations->num_rows > 0){
+                if(count($allReservations) > 0){
                     foreach($allReservations as $reservation)
                     {
-                        $reservationDate[] = $reservation['date_reservation'];
-                        $reservationHeure[] = $reservation['heure_reservation'];
-
+                       
+                        $avis = getAvis::getAvisByIdUserRes($id,$reservation['id']);
+                        
+                        $car = getCar::getCarById($reservation['car_id']);
                         echo "<div class='bg-white rounded-lg shadow-lg p-6'>
                 <h3 class='text-xl font-bold text-primary mb-4'>Reservation 1</h3>
+                <img src='../../app/".$car['image_path']."' alt='".$car['modele']."' class='w-full h-48 object-contain rounded-md' />
                 <ul class='text-gray-700'>
-                    <li><span class='font-bold'>Adresse:</span> ".$reservation['addresse_reservation']."</li>
-                    <li><span class='font-bold'>Nombre de Personnes:</span> ".$reservation['nbr_personnes']."</li>
-                    <li><span class='font-bold'>Date:</span> ".$reservation['date_reservation']."</li>
-                    <li><span class='font-bold'>Heure:</span> ".$reservation['heure_reservation']."</li>
-                    <li><span class='font-bold'>Staus:</span> ".$reservation['status']."</li>
+                    <li><span class='font-bold'>Adresse:</span> ".$reservation['lieu']."</li>
+                    <li><span class='font-bold'>Date Debut:</span> ".$reservation['date_debut']."</li>
+                    <li><span class='font-bold'>Date Fin:</span> ".$reservation['date_fin']."</li>
+                    <li><span class='font-bold'>Date Reservation:</span> ".$reservation['date_reservation']."</li>
+                    <li><span class='font-bold'>Status:</span> ".$reservation['status']."</li>
 
                 </ul>
                 <div class='flex justify-center gap-2'>
-                <form class='cancel-form' action='../../backend/actionsPHP/reservation/updateStatus.php' method='POST' >
+                <form class='cancel-form' action='../../app/actions/updateStatus.php' method='POST' >
                         <input type='hidden' name='res-id' value=".$reservation['id'].">
                         <input type='hidden' name='new-status' value='Canceled'>
                             <input type='hidden' name='action' value='confirm'>
-";
-                        
+                        ";  
+                                                
                         if($reservation['status'] !== 'Canceled')
                         {echo "
-                <button name='confirm' class='mt-6 bg-primary text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
-                    Cancel Reservation
-                </button>";}
-                echo "</form>
-                
-                        <input type='hidden' name='res-id' value=".$reservation['id'].">   
-                        <button name='edit_reservation' onclick=\"openEditModal('".$reservation['id']."', '".$reservation['id_menu']."', '".$reservation['heure_reservation']."', '".$reservation['date_reservation']."', '".$reservation['nbr_personnes']."', '".$reservation['addresse_reservation']."')\" class='mt-6 bg-primary text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
-                            Edit Reservation
+                        <button name='confirm' class='mt-6 bg-primary text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
+                        Cancel Reservation
+                        </button>";}
+                      echo "</form>";
+                            
+                        if($avis)
+                        {
+                            echo " <button name='edit_review' onclick=\"openEditReviewModal('".$avis['id']."', '".$avis['avis']."', ".$avis['stars'].")\"   class='mt-6 bg-primary  text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
+                            Modify Review
                         </button>
+                        <button name='delete_review'    class='mt-6 bg-red-600  text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
+                            <a href='../../app/actions/deleteAvis.php?".$avis['id']."'>Delete Review</a>
+                        </button>";
+                        }else 
+                        {
+                            echo " <button name='edit_reservation' onclick='openReviewModal(".$reservation['id'].")'  class='mt-6 bg-primary  text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300'>
+                            Add Review
+                        </button>";
+                        }
+                        echo "
               
                          </div>        
             </div>";
@@ -125,165 +147,93 @@
             ?>
 
           
+<script>
+     function openReviewModal(reservationId) {
+    document.getElementById('reservationId').value = reservationId;
+    document.getElementById('reviewModal').classList.remove('hidden');
+}
 
+function closeReviewModal() {
+    document.getElementById('reviewModal').classList.add('hidden');
+}
+function openEditReviewModal(avisId,message,stars) {
+    document.getElementById('avisId-edit').value = avisId;
+    document.getElementById('message-edit').value = message;
+    document.getElementById('stars-edit').value = stars;
+
+    document.getElementById('reviewModal-edit').classList.remove('hidden');
+}
+
+function closeEditReviewModal() {
+    document.getElementById('reviewModal-edit').classList.add('hidden');
+}
+</script>
    
         </div>
 
-        <!-- Add Reservation Button -->
-        <div class="text-center mt-16">
-            <button 
-                onclick="toggleModal()" 
-                class="bg-primary text-white py-3 px-6 rounded-lg text-lg hover:bg-[#826642] transition duration-300">
-                Make a New Reservation
-            </button>
-        </div>
+ <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded-md w-1/3 shadow-lg">
+        <h2 class="text-lg font-semibold mb-4">Add a Review</h2>
+        <form id="reviewForm" action="../../app/actions/addAvis.php" method="POST">
+            <input type="hidden" id="reservationId" name="reservation_id" />
+            
+            <div class="mb-4">
+                <label for="stars" class="block text-sm font-medium text-gray-700">Stars</label>
+                <select id="stars" name="stars" class="w-full mt-1 border rounded-md p-2">
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea id="message" name="message" class="w-full mt-1 border rounded-md p-2" rows="4"></textarea>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded mr-2" onclick="closeReviewModal()">Cancel</button>
+                <button type="submit" name="submit" class="bg-primary text-white py-2 px-4 rounded">Submit</button>
+            </div>
+        </form>
     </div>
+</div>
+<div id="reviewModal-edit" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded-md w-1/3 shadow-lg">
+        <h2 class="text-lg font-semibold mb-4">Modify Review</h2>
+        <form id="reviewForm-edit" action="../../app/actions/editAvis.php" method="POST">
+            <input type="hidden" id="avisId-edit" name="avisId-edit" />
+            
+            <div class="mb-4">
+                <label for="stars-edit" class="block text-sm font-medium text-gray-700">Stars</label>
+                <select id="stars-edit" name="stars-edit" class="w-full mt-1 border rounded-md p-2">
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label for="message-edit" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea id="message-edit" name="message-edit" class="w-full mt-1 border rounded-md p-2" rows="4"></textarea>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded mr-2" onclick="closeEditReviewModal()">Cancel</button>
+                <button type="submit" name="submit" class="bg-primary text-white py-2 px-4 rounded">Modify</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <!-- Reservation Modal -->
-    <div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg p-8 shadow-lg w-[90%] md:w-[50%]">
-            <h3 class="text-2xl font-bold text-primary mb-6">New Reservation</h3>
-            <form id="reservation-form" action="../../backend/actionsPHP/reservation/add.php" method="POST">
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Menu</label>
-        <select name="menu-select" id="menu-select" class="w-full border border-gray-300 text-gray-600 rounded-md p-2 focus:ring-primary focus:border-primary">
-            <option value="" checked>Choose a menu</option>
-            <?php
-            foreach ($allMenu as $menu) {
-                echo "<option value='" . $menu['id'] . "'>" . $menu['titre'] . "</option>";
-            }
-            ?>
-        </select>
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Adresse</label>
-        <input 
-            name="adresse-reservation"
-            id="adresse-reservation"
-            type="text" 
-            class="w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary"
-            placeholder="Enter Address"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Nombre de Personnes</label>
-        <input 
-            name="nbr-personne-reservation"
-            id="nbr-personne-reservation"
-            type="number" 
-            class="w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary"
-            placeholder="Enter Number of People"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Date</label>
-        <input 
-            name="date-reservation"
-            id="date-reservation"
-            type="date" 
-            class="w-full border border-gray-300 rounded-md p-2 text-gray-600 focus:ring-primary focus:border-primary"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Heure</label>
-        <input 
-            name="heure-reservation"
-            id="heure-reservation"
-            type="time" 
-            class="w-full border border-gray-300 rounded-md text-gray-600 p-2 focus:ring-primary focus:border-primary"
-        >
-    </div>
-    <div class="flex justify-end space-x-4">
-        <button 
-            type="button" 
-            onclick="toggleModal()" 
-            class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-300">
-            Cancel
-        </button>
-        <button 
-            id="submit-button"
-            type="submit" 
-            class="bg-primary text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300">
-            Confirm Reservation
-        </button>
-    </div>
-</form>
-        </div>
-        </div>
-        <div id="reservationModal-edit" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-black hidden ">
-        <div class="bg-white rounded-lg p-8 shadow-lg w-[90%] md:w-[50%]">
-            <h3 class="text-2xl font-bold text-primary mb-6">Modify Reservation</h3>
-            <form id="reservation-form-edit" action="../../backend/actionsPHP/reservation/edit.php" method="POST">
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Menu</label>
-        <input type="hidden" id="r-id" name="r-id">
-        <select name="menu-select-edit" id="menu-select-edit" class="w-full border border-gray-300 text-gray-600 rounded-md p-2 focus:ring-primary focus:border-primary">
-            <option value="" checked>Choose a menu</option>
-            <?php
-            foreach ($allMenu as $menu) {
-                echo "<option value='" . $menu['id'] . "' >" . $menu['titre'] . "</option>";
-            }
-            ?>
-        </select>
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Adresse</label>
-        <input 
-            name="adresse-reservation-edit"
-            id="adresse-reservation-edit"
-            type="text" 
-            class="w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary"
-            placeholder="Enter Address"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Nombre de Personnes</label>
-        <input 
-            name="nbr-personne-reservation-edit"
-            id="nbr-personne-reservation-edit"
-            type="number" 
-            class="w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary"
-            placeholder="Enter Number of People"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Date</label>
-        <input 
-            name="date-reservation-edit"
-            id="date-reservation-edit"
-            type="date" 
-            class="w-full border border-gray-300 rounded-md p-2 text-gray-600 focus:ring-primary focus:border-primary"
-        >
-    </div>
-    <div class="mb-4">
-        <label class="block font-bold text-gray-700 mb-2">Heure</label>
-        <input 
-            name="heure-reservation-edit"
-            id="heure-reservation-edit"
-            type="time" 
-            class="w-full border border-gray-300 rounded-md text-gray-600 p-2 focus:ring-primary focus:border-primary"
-        >
-    </div>
-    <div class="flex justify-end space-x-4">
-        <button 
-            type="button" 
-            onclick="toggleEditModal()" 
-            class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-300">
-            Cancel
-        </button>
-        <button 
-            id="submit-button-edit"
-            type="submit" 
-            class="bg-primary text-white py-2 px-4 rounded hover:bg-[#826642] transition duration-300">
-            Modify Reservation
-        </button>
-    </div>
-</form>
-        </div>
-        </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+   
        const $allCancel = document.querySelectorAll('.cancel-form')
        $allCancel.forEach(cancel => {
         cancel.addEventListener('submit', function(event){

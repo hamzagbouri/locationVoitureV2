@@ -3,6 +3,7 @@ require_once '../../app/actions/getCar.php';
 $cars = getCar::getAllCars();
 require_once '../../app/actions/getCategory.php';
 $allCategories = getCategory::getAllCategories();
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,7 +89,14 @@ $allCategories = getCategory::getAllCategories();
             </select>
         </div>
     </div>
-
+    <?php
+        if(isset($_SESSION['error']))
+        {
+            echo "<p class='text-red-600 text-xl pt-16'>".$_SESSION['error']."</p>";
+            unset($_SESSION['error']);
+        }
+    ?>
+       
     <div class="flex flex-wrap h-[100%] w-[100%] justify-around gap-8 pt-8" id="carCards">
        
       
@@ -98,6 +106,49 @@ $allCategories = getCategory::getAllCategories();
       
     </div>
 </section>
+<div id="reviewsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-md w-96 max-h-[80%] overflow-y-auto text-black">
+        <h2 class="text-xl font-bold mb-4">Reviews</h2>
+        <div id="reviewsContainer" class="space-y-4">
+        </div>
+        <button 
+            class="mt-4 bg-gray-500 text-white py-2 px-4 rounded"
+            onclick="document.getElementById('reviewsModal').classList.add('hidden')">
+            Close
+        </button>
+    </div>
+</div>
+
+    <div id="bookingModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex text-black items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-md shadow-lg w-96">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Reserve Car</h2>
+            <form id="bookingForm" action="../../app/actions/addReservation.php" method ="POST">
+           
+                <input type="hidden" id="carId" name="carId">
+  
+                <div class="mb-4">
+                    <label for="dateDebut" class="block text-gray-700 font-medium">Date Debut</label>
+                    <input type="date" id="dateDebut" name="date_debut" class="w-full border rounded-md p-2 mt-1">
+                </div>
+        
+                <div class="mb-4">
+                    <label for="dateFin" class="block text-gray-700 font-medium">Date Fin</label>
+                    <input type="date" id="dateFin" name="date_fin" class="w-full border rounded-md p-2 mt-1">
+                </div>
+      
+                <div class="mb-4">
+                    <label for="lieu" class="block text-gray-700 font-medium">Lieu</label>
+                    <input type="text" id="lieu" name="lieu" class="w-full border rounded-md p-2 mt-1" placeholder="Enter location">
+                </div>
+        
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="cancelBooking" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md">Reserve</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <?php include 'footer.php'  ;?>
     <script src="cars.js">
