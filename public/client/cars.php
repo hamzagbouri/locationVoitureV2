@@ -105,6 +105,13 @@ session_start();
 
       
     </div>
+    <div class="w-full flex justify-center items-center">
+        <div id="pagesContainer" class="flex gap-2">
+            
+
+        </div>
+
+    </div>
 </section>
 <div id="reviewsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-white p-6 rounded-md w-96 max-h-[80%] overflow-y-auto text-black">

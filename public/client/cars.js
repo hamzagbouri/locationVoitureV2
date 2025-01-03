@@ -1,5 +1,49 @@
 const carCardsContainer = document.getElementById('carCards');
 
+fetch('../../app/actions/getCount.php')
+.then(response => response.json())
+.then(carsNumber => {
+    const totalPages = Math.ceil(carsNumber.totalCars /6);
+    console.log(totalPages);
+    document.getElementById('pagesContainer').innerHTML=``;
+    for(let i=1;i<=totalPages;i++)
+    document.getElementById('pagesContainer').innerHTML+=`<p class="page border border-gray-200 rounded-md px-3 py-1">${i}</p>`;
+    document.querySelectorAll('.page').forEach(page=>{
+        
+        page.addEventListener('click', function () {
+            const startIndex = (parseInt(page.textContent) - 1) * 6;
+
+            const formData = new FormData();
+            formData.append('start', startIndex);
+
+            fetch('../../app/actions/getCustomCar.php', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((cars) => {
+                    if (cars.error) {
+                        console.error('Server error:', cars.error);
+                    } else {
+                        console.log('Fetched cars:', cars);
+                        showAllCars(cars); 
+                    }
+                })
+                .catch((err) => {
+                    console.error('Error fetching cars:', err);
+                });
+        });
+
+    })
+
+})
+
+.catch(err => console.error('Error fetching Count:', err));
 function showCars(cars)
 {
      cars.forEach(car => {          
@@ -30,6 +74,10 @@ function showCars(cars)
                 `;
            
     });
+}
+function showCustomCars(nbrPage)
+{
+   
 }
 const bookingModal = document.getElementById('bookingModal');
 const bookingForm = document.getElementById('bookingForm');
@@ -68,7 +116,7 @@ document.getElementById('carSearch').addEventListener('keyup', function(){
     const valueSearch = document.getElementById('carSearch').value.trim()
     if(valueSearch == "")
     {
-        showAllCars();
+        showCarsOnLoad();
     }
     else {
         const formData = new FormData();
@@ -89,23 +137,30 @@ document.getElementById('carSearch').addEventListener('keyup', function(){
 
     }
 })
-function showAllCars(){
-    document.getElementById('carCards').innerHTML = ``
-
-
-    fetch('../../app/actions/getAllCars.php')
-    .then(response => response.json())
-    .then(cars => {
-        carCardsContainer.innerHTML = ''; 
-
-       
-        showCars(cars)
-    })
-    .catch(err => console.error('Error fetching cars:', err));
-
+function showAllCars(cars){
+    carCardsContainer.innerHTML = ''; 
+    showCars(cars)
 }
-showAllCars()
 
+function showCarsOnLoad()
+{
+    const formDatat = new FormData();
+let start = 0;
+formDatat.append('start', start);
+
+
+
+fetch('../../app/actions/getCustomCar.php',{
+    method: "post",
+    body: formDatat,
+})
+.then(response => response.json())
+.then(cars => {
+    showAllCars(cars)
+})
+.catch(err => console.error('Error fetching cars:', err));
+}
+showCarsOnLoad();
 function openReviewsModal(idCar) {
     const formData = new FormData();
     formData.append('carId', idCar);

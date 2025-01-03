@@ -103,6 +103,42 @@ class Car {
         return ['error' => 405, 'message' => $e->getMessage()];
     }
     }
+    public static function getCountCar($pdo){
+        try {
+            $stmt = $pdo->prepare("SELECT COUNT(*) as totalCars from car");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+            
+        } catch (Exception $e ) {
+            return 401;
+
+        }
+    }
+    public static function getCustomCars($pdo,$limit, $start)
+       {
+    
+
+        try {
+            
+            $stmt = $pdo->prepare("SELECT * FROM car LIMIT :limit OFFSET :offset");
+
+           
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $start, PDO::PARAM_INT);
+        
+            $stmt->execute();
+        
+
+            
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $results;
+            
+        } catch (Exception $e ) {
+            return $e->getMessage();
+
+        }
+       }
     
 
 }
