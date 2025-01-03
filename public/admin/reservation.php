@@ -1,4 +1,12 @@
 
+<?php
+require_once '../../app/actions/getReservations.php';
+$allReservations = getReservations::getAllReservations();
+require_once '../../app/actions/getUser.php';
+
+require_once '../../app/actions/getCar.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,12 +161,46 @@
                     </div>
                </div>
             </div>
-            <div class="flex w-full flex-wrap gap-2 justify-around ">
-             
-               
-             
-
+            <div class="flex w-full flex-wrap gap-2 justify-around">
+                <?php foreach($allReservations as $reservation):
+                    $user = getUser::getUserById(htmlspecialchars($reservation['client_id'])) ;
+                    $car = getCar::getCarById(htmlspecialchars($reservation['car_id']));
+                    ?>
+                    <div class="w-full md:w-96 p-4 bg-white rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold">Reservation #<?= htmlspecialchars($reservation['id']) ?></h3>
+                            <span class="px-3 py-1 text-sm rounded-full 
+                                <?= $reservation['status'] === 'Canceled' ||  $reservation['status'] === 'Rejected' ? 'bg-red-100 text-red-800' : ($reservation['status'] === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') ?>">
+                                <?= htmlspecialchars($reservation['status']) ?>
+                            </span>
+                        </div>
+                        <?php if($reservation['status'] === 'Pending'): ?>
+                            <div class="flex gap-2 mb-3">
+                                <form action="../../app/actions/updateStatus.php" method="POST">
+                                    <input type="hidden" name="res-id" value="<?= htmlspecialchars($reservation['id']) ?>">
+                                    <button name="accept" 
+                                            class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                                        Accept
+                                    </button>
+                                    <button name="reject" 
+                                            class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
+                        <img src="<?= htmlspecialchars('../../app/'.$car['image_path']) ?>" alt="<?= htmlspecialchars($car['marque']) ?>" class="w-full h-48 object-contain">
+                        <div class="space-y-2 text-gray-600">
+                            <p>Client: <?= htmlspecialchars($user['fullName']) ?></p>
+                            <p>Lieu: <?= htmlspecialchars($reservation['lieu']) ?></p>
+                            <p>Date Debut: <?= htmlspecialchars($reservation['date_debut']) ?></p>
+                            <p>Date Fin: <?= htmlspecialchars($reservation['date_fin']) ?></p>
+                            <p>Date Reservation: <?= htmlspecialchars($reservation['date_reservation']) ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
+
  
           
         </section>
