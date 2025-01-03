@@ -46,6 +46,7 @@ fetch('../../app/actions/getCount.php')
 .catch(err => console.error('Error fetching Count:', err));
 function showCars(cars)
 {
+    console.log(cars)
      cars.forEach(car => {          
                 carCardsContainer.innerHTML += `
                     <div class="w-full sm:w-1/3 md:w-1/4 p-4">
@@ -96,7 +97,7 @@ document.getElementById("categoryFilter").addEventListener('change', function(){
     console.log(categoryId)
     if(categoryId == "")
     {
-        showAllCars();
+        showCarsOnLoad();
     } else {
     const formData = new FormData();
     formData.append('idCategory',categoryId);
@@ -164,13 +165,14 @@ showCarsOnLoad();
 function openReviewsModal(idCar) {
     const formData = new FormData();
     formData.append('carId', idCar);
-
+    console.log(idCar)
     fetch('../../app/actions/getAvisByCar.php', {
         method: 'POST',
         body: formData
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (Array.isArray(data) && data.length > 0) {
                 const reviewsContainer = document.getElementById('reviewsContainer');
                 reviewsContainer.innerHTML = '';

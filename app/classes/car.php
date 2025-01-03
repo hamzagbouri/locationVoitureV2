@@ -94,7 +94,7 @@ class Car {
     try {
         $modeleWithWildcards = "%" . $modele . "%";
         
-        $stmt = $pdo->prepare("SELECT * FROM car WHERE modele LIKE ?");
+        $stmt = $pdo->prepare("SELECT * FROM carsview WHERE modele LIKE ?");
         $stmt->execute([$modeleWithWildcards]);
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -105,7 +105,7 @@ class Car {
     }
     public static function getCountCar($pdo){
         try {
-            $stmt = $pdo->prepare("SELECT COUNT(*) as totalCars from car");
+            $stmt = $pdo->prepare("SELECT COUNT(*) as totalCars from carsview");
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -120,7 +120,7 @@ class Car {
 
         try {
             
-            $stmt = $pdo->prepare("SELECT * FROM car LIMIT :limit OFFSET :offset");
+            $stmt = $pdo->prepare("SELECT * FROM carsview LIMIT :limit OFFSET :offset");
 
            
             $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
