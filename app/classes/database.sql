@@ -69,3 +69,41 @@ BEGIN
 END //
 
 DELIMITER ;
+
+CREATE TABLE THEME(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50),
+    image_path VARCHAR(50)
+);
+CREATE TABLE Tag(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50)
+
+);
+CREATE TABLE Article(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_path VARCHAR(50),
+    titre VARCHAR(50),
+    description VARCHAR(50),
+    status ENUM("Pending", "Accepted","Rejected"),
+    theme_id int,
+    FOREIGN KEY (theme_id) REFERENCES THEME(id)
+
+);
+CREATE TABLE article_tags(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT,
+    tag_id INT,
+    FOREIGN KEY (article_id) REFERENCES Article(id),
+    FOREIGN KEY (tag_id) REFERENCES Tag(id)
+
+);
+CREATE TABLE Commantaire(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT,
+    user_id INT,
+    Commantaire VARCHAR(255),
+    FOREIGN KEY (article_id) REFERENCES Article(id),
+    FOREIGN KEY (user_id) REFERENCES User(id)
+
+);
