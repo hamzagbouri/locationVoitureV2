@@ -1,13 +1,21 @@
 
 <?php
 session_start();
+    
+if(!isset($_SESSION['id']  ) )
+{
+    header('Location: ../');
+}
 require_once '../../app/actions/getReservations.php';
 require_once '../../app/actions/getCar.php';
 require_once '../../app/actions/getAvis.php';
 $id = $_SESSION['id'];
 $allReservations = getReservations::getReservationByUserId($id);
 
-$id = $_SESSION['id'];
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

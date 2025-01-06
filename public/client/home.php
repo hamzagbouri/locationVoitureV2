@@ -1,4 +1,12 @@
 
+<?php
+  session_start();
+    
+  if(!isset($_SESSION['id']  ) )
+  {
+      header('Location: ../');
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,6 +74,8 @@
 </head>
 <body class="w-full h-full min-h-screen text-white font-primary ">
     <?php include 'header.php';
+  
+    
     ?>
 
     <section class="flex flex-col md:flex-row w-full h-full p-4 md:p-32  items-center justify-center text-black">

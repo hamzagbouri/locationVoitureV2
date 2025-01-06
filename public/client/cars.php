@@ -3,7 +3,14 @@ require_once '../../app/actions/getCar.php';
 $cars = getCar::getAllCars();
 require_once '../../app/actions/getCategory.php';
 $allCategories = getCategory::getAllCategories();
-session_start();
+
+  session_start();
+    
+  if(!isset($_SESSION['id']  ) )
+  {
+      header('Location: ../');
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

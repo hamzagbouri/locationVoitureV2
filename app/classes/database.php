@@ -6,7 +6,7 @@ class Database {
 
     private function __construct() {
         $host = 'localhost';
-        $db = 'location_voiture';
+        $db = 'location_voitureV2';
         $user = 'root';
         $pass = '';
 
