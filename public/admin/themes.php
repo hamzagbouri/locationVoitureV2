@@ -1,6 +1,6 @@
 <?php 
-require_once '../../app/actions/getCategory.php';
-$allCategories = getCategory::getAllCategories();
+require_once '../../app/actions/blog/theme/get.php';
+$allThemes = getTheme::getAllTheme();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,18 +83,19 @@ $allCategories = getCategory::getAllCategories();
                 </a>
               </div>
             </div>
+            
             <a href="reservation.php" class="flex gap-4 px-4 py-2 rounded-2xl">
               <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
               Reservations
             </a>
             <a href="themes.php" class="flex gap-4 px-4 py-2 rounded-2xl">
-                        <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
-                        Themes
-                    </a>
-                    <a href="tags.php" class="flex gap-4 px-4 py-2 rounded-2xl">
-                        <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
-                        Tags
-                    </a>
+              <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
+              Themes
+            </a>
+            <a href="tags.php" class="flex gap-4 px-4 py-2 rounded-2xl">
+              <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
+              Tags
+            </a>
             <a href="avis.php" class="flex gap-4 px-4 py-2 rounded-2xl">
               <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
               Avis
@@ -172,7 +173,7 @@ $allCategories = getCategory::getAllCategories();
                 id="add-etd"
                 class="flex gap-2 items-center bg-primary px-4 py-2 rounded-lg text-white"
               >
-                <img src="./img/_Avatar add button.svg" alt="" />New Category
+                <img src="./img/_Avatar add button.svg" alt="" />New Theme
               </button>
             </div>
           </div>
@@ -211,104 +212,121 @@ $allCategories = getCategory::getAllCategories();
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach($allCategories as $category){ ?>
+    <?php foreach($allThemes as $theme){ ?>
+    <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+        <!-- Image du thème -->
+        <img src="<?= htmlspecialchars('../../app/'.$theme['image_path']) ?>" alt="<?= htmlspecialchars($theme['nom']) ?>" class="w-full h-48 object-cover rounded-lg mb-4">
 
-            <div
-              class="bg-white rounded-lg shadow-md p-6 flex justify-between items-center"
+        <!-- Informations du thème -->
+        <div class="flex-1 text-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800"><?= htmlspecialchars($theme['nom']) ?></h3>
+        </div>
+
+        <!-- Boutons de modification, suppression et vue des articles -->
+        <div class="flex gap-4 justify-center items-center">
+            <!-- Bouton de modification -->
+            <button
+                onclick="openEditModal(<?= htmlspecialchars(json_encode($theme)) ?>)"
+                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
             >
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold text-gray-800">
-                  <?php echo $category['nom']; ?>
-                </h3>
-              </div>
-              <div class="flex gap-4">
-                <button
-                  onclick="openEditModal(<?= htmlspecialchars(json_encode($category)) ?>)"
-                >
-                  <img src="./img/editinggh.png" alt="Edit" class="w-5 h-5" />
-                </button>
+                Edit Theme
+            </button>
 
-                <a
-                  href="../../app/actions/deleteCategory.php?id=<?php echo $category['id']; ?>"
-                  ><img src="./img/delete.png" alt="Delete" class="w-5 h-5"
-                /></a>
-              </div>
-            </div>
-            <?php } ?>
-          </div>
+      
+            <!-- Bouton View Articles -->
+            <a
+                href="view_articles.php?theme_id=<?= $theme['id']; ?>"
+                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+            >
+                View Articles
+            </a>
+        </div>
+    </div>
+    <?php } ?>
+</div>
+
+
         </section>
       </div>
 
       <div
-        id="categoryModal"
+        id="themeModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
         <div class="bg-white rounded-lg w-96 p-6">
-          <h2 class="text-2xl font-semibold mb-4">Add New Category</h2>
+          <h2 class="text-2xl font-semibold mb-4">Add New Theme</h2>
           <form
-            id="categoryForm"
-            method="POST"
-            action="../../app/actions/addCategory.php"
-          >
-            <label
-              for="categoryName"
-              class="block text-sm font-medium text-gray-700"
-              >Category Name</label
-            >
-            <input
-              type="text"
-              id="categoryName"
-              name="nom-category"
-              class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter category name"
-              required
-            />
-            <div class="mt-6 flex justify-end gap-4">
-              <button
-                type="button"
-                id="closeModal"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                name="submit"
-                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-              >
-                Add Category
-              </button>
-            </div>
-          </form>
+                id="themeForm"
+                method="POST"
+                action="../../app/actions/blog/theme/add.php"
+                enctype="multipart/form-data"
+                >
+                <label for="themeName" class="block text-sm font-medium text-gray-700">Theme Name</label>
+                <input
+                    type="text"
+                    id="themeName"
+                    name="nom-theme"
+                    class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Enter theme name"
+                    required
+                />
+
+                <label for="themeImage" class="block text-sm font-medium text-gray-700 mt-4">Upload Image</label>
+                <input
+                    type="file"
+                    id="themeImage"
+                    name="image"
+                    accept="image/*"
+                    class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
+                />
+
+                <div class="mt-6 flex justify-end gap-4">
+                    <button
+                    type="button"
+                    id="closeModal"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                    >
+                    Cancel
+                    </button>
+                    <button
+                    type="submit"
+                    name="submit"
+                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+                    >
+                    Add theme
+                    </button>
+                </div>
+                </form>
         </div>
       </div>
     </div>
     <div
-        id="categoryModal-edit"
+        id="themeModal-edit"
         class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
         <div class="bg-white rounded-lg w-96 p-6">
-          <h2 class="text-2xl font-semibold mb-4">Modify Category</h2>
+          <h2 class="text-2xl font-semibold mb-4">Modify theme</h2>
           <form
-            id="categoryForm-edit"
+            id="themeForm-edit"
             method="POST"
-            action="../../app/actions/editCategory.php"
+            action="../../app/actions/blog/theme/update.php"
           >
           <input
               type="hidden"
-              id="id-category-edit"
-              name="id-category-edit"
+              id="id-theme-edit"
+              name="id-theme-edit"
               
             />
             <label
-              for="nom-category-edit"
+              for="nom-theme-edit"
               class="block text-sm font-medium text-gray-700"
-              >Category Name</label
+              >theme Name</label
             >
             <input
               type="text"
-              id="nom-category-edit"
-              name="nom-category-edit"
+              id="nom-theme-edit"
+              name="nom-theme-edit"
               class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter category name"
+              placeholder="Enter theme name"
               required
             />
             <div class="mt-6 flex justify-end gap-4">
@@ -324,7 +342,7 @@ $allCategories = getCategory::getAllCategories();
                 name="submit"
                 class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
               >
-                Modify Category
+                Modify theme
               </button>
             </div>
           </form>
@@ -332,13 +350,13 @@ $allCategories = getCategory::getAllCategories();
       </div>
 
     <script>
-      const modalEdit = document.getElementById("categoryModal-edit");
-      const modal = document.getElementById("categoryModal");
-      const addCategoryButton = document.getElementById("add-etd");
+      const modalEdit = document.getElementById("themeModal-edit");
+      const modal = document.getElementById("themeModal");
+      const addthemeButton = document.getElementById("add-etd");
       const closeModalButton = document.getElementById("closeModal");
-      const categoryForm = document.getElementById("categoryForm");
+      const themeForm = document.getElementById("themeForm");
 
-      addCategoryButton.addEventListener("click", () => {
+      addthemeButton.addEventListener("click", () => {
         modal.classList.remove("hidden");
       });
 
@@ -351,10 +369,10 @@ $allCategories = getCategory::getAllCategories();
           modal.classList.add("hidden");
         }
       });
-      function openEditModal(category){
+      function openEditModal(theme){
         modalEdit.classList.remove("hidden");
-        document.getElementById("nom-category-edit").value = category.nom;
-        document.getElementById("id-category-edit").value = category.id;
+        document.getElementById("nom-theme-edit").value = theme.nom;
+        document.getElementById("id-theme-edit").value = theme.id;
       }
       document.getElementById("closeModal-edit").addEventListener("click", () => {
         modalEdit.classList.add("hidden");

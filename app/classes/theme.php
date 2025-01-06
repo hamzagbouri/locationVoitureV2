@@ -25,8 +25,8 @@ class Theme {
             if ($this->id === null) {
                 throw new Exception("Theme ID is required to modify the theme.");
             }
-            $stmt = $pdo->prepare("UPDATE Theme SET nom = ?, image_path = ? WHERE id = ?");
-            $stmt->execute([$this->nom, $this->imagePath, $this->id]);
+            $stmt = $pdo->prepare("UPDATE Theme SET nom = ? WHERE id = ?");
+            $stmt->execute([$this->nom, $this->id]);
             return 202;
         } catch (Exception $e) {
             return 402 . $e->getMessage();

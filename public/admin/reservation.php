@@ -80,6 +80,14 @@ require_once '../../app/actions/getCar.php';
                     <a href='reservation.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
                         <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Reservations
                     </a>
+                    <a href="themes.php" class="flex gap-4 px-4 py-2 rounded-2xl">
+                        <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
+                        Themes
+                    </a>
+                    <a href="tags.php" class="flex gap-4 px-4 py-2 rounded-2xl">
+                        <img id="btn-icon" class="mt-1" src="./img/3 User.svg" alt="" />
+                        Tags
+                    </a>
                     <a href='avis.php' class='flex gap-4 px-4 py-2 rounded-2xl'>
                         <img id='btn-icon' class='mt-1' src='./img/3 User.svg' alt=''> Avis
                     </a>
