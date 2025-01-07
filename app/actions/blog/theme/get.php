@@ -11,6 +11,12 @@ class getTheme {
         $themes = Theme::getAllThemes($pdo);
         return $themes;
     }
+    static function getThemeById($id){
+        $dbInstance = Database::getInstance();
+        $pdo = $dbInstance->getConnection();
+        $theme = Theme::getThemeById($pdo,$id);
+        return $theme;
+    }
 }
 
 ?>

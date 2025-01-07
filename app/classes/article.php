@@ -8,19 +8,18 @@ class Article {
     private $status;
     private $themeId;
 
-    public function __construct($id = null, $imagePath = null, $titre = null, $description = null, $status = null, $themeId = null) {
+    public function __construct($id = null, $imagePath = null, $titre = null, $description = null,  $themeId = null) {
         $this->id = $id;
         $this->imagePath = $imagePath;
         $this->titre = $titre;
         $this->description = $description;
-        $this->status = $status;
         $this->themeId = $themeId;
     }
 
     public function createArticle($pdo) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO Article (image_path, titre, description, status, theme_id) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$this->imagePath, $this->titre, $this->description, $this->status, $this->themeId]);
+            $stmt = $pdo->prepare("INSERT INTO Article (image_path, titre, description, theme_id) VALUES (?, ?,  ?, ?)");
+            $stmt->execute([$this->imagePath, $this->titre, $this->description, $this->themeId]);
             $this->id = $pdo->lastInsertId();
             return 202;
         } catch (Exception $e) {

@@ -80,7 +80,7 @@
             <!-- Footer Bottom -->
             <div class=" text-gray-400 pb-4 pt-8 ">
                 <div class="container mx-auto px-4 w-full flex flex-col sm:flex-row justify-around items-center">
-                    <p class="text-sm text-center">&copy; 2024 <a href="" class="hover:underline text-white">Chef Pro</a>, All Rights Reserved.</p>
+                <p>&copy; <?= date('Y') ?> Your Blog Name. All rights reserved.</p>
                     
                 </div>
             </div>

@@ -13,6 +13,7 @@ class Tag {
         try {
             $stmt = $pdo->prepare("INSERT INTO Tag (nom) VALUES (?)");
             $stmt->execute([$this->nom]);
+            $this->id = $pdo->lastInsertId();
             return 202;
         } catch (Exception $e) {
             return 401 . $e->getMessage();
@@ -41,7 +42,9 @@ class Tag {
             return 404 . $e->getMessage();
         }
     }
-
+    public function getId(){
+        return $this->id;
+    }
     public static function getTagById($pdo, $id) {
         try {
             $stmt = $pdo->prepare("SELECT * FROM Tag WHERE id = ?");
@@ -59,6 +62,13 @@ class Tag {
         } catch (Exception $e) {
             return 406 . $e->getMessage();
         }
+    }
+    public static function searchTag($pdo,$search)
+    {
+        $sql = "SELECT * FROM Tag WHERE nom LIKE :query LIMIT 10";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['query' => '%' . $search . '%']);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

@@ -10,6 +10,7 @@
                     <li><a class="nav-items hover:text-primary hover:font-bold "  href="cars.php">Cars</a></li>
                     <li><a class="nav-items hover:text-primary hover:font-bold"  href="contact.php">Contact</a></li>
                     <li><a class="nav-items hover:text-primary hover:font-bold"  href="reservation.php">Reservations</a></li>
+                    <li><a class="nav-items hover:text-primary hover:font-bold"  href="blog.php">Blog</a></li>
 
                  
                 </ul>
