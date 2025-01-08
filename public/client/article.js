@@ -1,3 +1,61 @@
+function showAllArticles() {
+    fetch('../../app/actions/blog/article/getAllJSON.php')
+        .then(response => response.json())
+        .then(articles => {
+            const articlesList = document.getElementById('articlesList');
+            articlesList.innerHTML = ''; // Clear existing articles
+            console.log(articles)
+            articles.forEach(article => {
+                // Create article card
+                const articleCard = document.createElement('div');
+                articleCard.classList.add('w-full', 'md:w-1/2', 'lg:w-1/3', 'p-4');
+
+                articleCard.innerHTML = `
+                    <div class="bg-white shadow rounded overflow-hidden">
+                        <img src="../../app/${article.image_path}" alt="${article.titre}" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold mb-2">${article.titre}</h2>
+                            <p class="text-gray-700 mb-2">${article.description}</p>
+                            <div class="tags mb-2"></div>
+                            <div class="flex justify-between items-center">
+                                <button class="add-fav px-4 py-2 bg-blue-500 text-white rounded">Add to Favorites</button>
+                                <button class="add-comment px-4 py-2 bg-gray-200 rounded">Add Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                articlesList.appendChild(articleCard);
+
+                fetchTagsForArticle(articleCard.querySelector('.tags'), article.id);
+
+                articleCard.querySelector('.add-fav').addEventListener('click', () => addToFavorites(article.id));
+                articleCard.querySelector('.add-comment').addEventListener('click', () => addComment(article.id));
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching articles:', error);
+        });
+}
+
+function fetchTagsForArticle(container, articleId) {
+    fetch(`../../app/actions/blog/article/getTagsForArticle.php?articleId=${articleId}`)
+        .then(response => response.json())
+        .then(tags => {
+            container.innerHTML = ''; 
+            tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.classList.add('inline-block', 'bg-gray-200', 'text-gray-800', 'px-3', 'py-1', 'rounded', 'mr-2', 'text-sm');
+                tagSpan.textContent = tag.nom;
+                container.appendChild(tagSpan);
+            });
+        })
+        .catch(error => {
+            console.error(`Error fetching tags for article ${articleId}:`, error);
+        });
+}
+
+showAllArticles()
 const quill = new Quill('#articleDescriptionEditor', {
     theme: 'snow',
     placeholder: 'Write your article description here...',

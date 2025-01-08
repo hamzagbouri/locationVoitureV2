@@ -93,19 +93,22 @@ class Article {
     }
 
 
-    public static function getArticlesForTag($pdo, $tagId) {
+    public static function getTagsForArticle($pdo, $articleId) {
         try {
             $stmt = $pdo->prepare("
-                SELECT a.* FROM Article a
-                INNER JOIN article_tags at ON a.id = at.article_id
-                WHERE at.tag_id = ?
+                SELECT t.id, t.name
+                FROM tags t
+                INNER JOIN article_tags at ON t.id = at.tag_id
+                WHERE at.article_id = :articleId
             ");
-            $stmt->execute([$tagId]);
+            $stmt->bindParam(':articleId', $articleId, PDO::PARAM_INT);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
-            return [];
+        } catch (PDOException $e) {
+            throw new Exception("Error retrieving tags for article: " . $e->getMessage());
         }
     }
+    
 }
 
 ?>

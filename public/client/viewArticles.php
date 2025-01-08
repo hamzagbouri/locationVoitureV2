@@ -155,7 +155,7 @@ session_start();
     </div>
 
     <!-- Themes List -->
-    <div id="themesList" class="flex flex-wrap -mx-4">
+    <div id="articlesList" class="flex flex-wrap -mx-4">
      
     </div>
 </div>
@@ -172,7 +172,7 @@ session_start();
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <!-- Title -->
                 <div>
-                    <input type="hidden" value="<?php echo $theme_id?>" id="themeId">
+                    <input type="hidden" value="<?php echo $theme_id?>" name="themeId">
                     <label for="articleTitle" class="block font-medium mb-1">Title</label>
                     <input 
                         type="text" 
