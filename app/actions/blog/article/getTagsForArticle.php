@@ -5,10 +5,10 @@ require_once __DIR__ . '/../../../classes/database.php';
 
 
 
-        $id = $_GET['articleId'];
+        $idArticle = $_GET['articleId'];
         $dbInstance = Database::getInstance();
         $pdo = $dbInstance->getConnection();
-        $tags = Article::getTagsForArticle($pdo,$id);
+        $tags = Article::getTagsForArticle($pdo,$idArticle);
         echo json_encode($tags);
     
 

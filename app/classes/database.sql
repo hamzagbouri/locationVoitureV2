@@ -107,3 +107,11 @@ CREATE TABLE Commantaire(
     FOREIGN KEY (user_id) REFERENCES User(id)
 
 );
+CREATE TABLE Favori (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT,
+    user_id INT,
+    FOREIGN KEY (article_id) REFERENCES Article(id),
+    FOREIGN KEY (user_id) REFERENCES User(id)
+
+);

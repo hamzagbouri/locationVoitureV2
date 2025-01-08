@@ -1,59 +1,153 @@
-function showAllArticles() {
-    fetch('../../app/actions/blog/article/getAllJSON.php')
-        .then(response => response.json())
-        .then(articles => {
-            const articlesList = document.getElementById('articlesList');
-            articlesList.innerHTML = ''; // Clear existing articles
-            console.log(articles)
-            articles.forEach(article => {
-                // Create article card
-                const articleCard = document.createElement('div');
-                articleCard.classList.add('w-full', 'md:w-1/2', 'lg:w-1/3', 'p-4');
+// Helper function to convert hex to rgba
+function hexToRgba(hex, alpha = 0.2) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
-                articleCard.innerHTML = `
-                    <div class="bg-white shadow rounded overflow-hidden">
-                        <img src="../../app/${article.image_path}" alt="${article.titre}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h2 class="text-lg font-bold mb-2">${article.titre}</h2>
-                            <p class="text-gray-700 mb-2">${article.description}</p>
-                            <div class="tags mb-2"></div>
-                            <div class="flex justify-between items-center">
-                                <button class="add-fav px-4 py-2 bg-blue-500 text-white rounded">Add to Favorites</button>
-                                <button class="add-comment px-4 py-2 bg-gray-200 rounded">Add Comment</button>
+function getTagColor(tagName) {
+    const colors = {
+        'Luxury': '#3B82F6',
+        'Sports': '#10B981',
+        'Electric': '#8B5CF6',
+        'Vintage': '#F59E0B',
+        'SUV': '#EC4899',
+    };
+    
+    if (!colors[tagName]) {
+        // Generate a random color for unspecified tags
+        const randomHue = Math.floor(Math.random() * 360); // Random hue between 0 and 359
+        return `hsl(${randomHue}, 70%, 50%)`;
+    }
+    
+    return colors[tagName];
+}
+
+function createTagElement(tag) {
+    const color = getTagColor(tag.nom);
+    console.log("hes",hexToRgba(color))
+    return `
+        <span 
+            class="inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2"
+            style="background-color: rgba(162,162,162,0.4); color: #36454F;"
+        >
+            ${tag.nom}
+        </span>
+    `;
+}
+
+async function fetchTagsForArticle(articleId) {
+    try {
+        const response = await fetch(`../../app/actions/blog/article/getTagsForArticle.php?articleId=${articleId}`);
+        const tags = await response.json();
+        return tags;
+    } catch (error) {
+        console.error(`Error fetching tags for article ${articleId}:`, error);
+        return [];
+    }
+}
+async function getComments(articleId) {
+    try {
+        const response = await fetch(`../../app/actions/blog/commantaire/get.php?articleId=${articleId}`);
+        const comments = await response.json();
+        console.log(comments)
+        return comments;
+    } catch (error) {
+        console.error(`Error fetching tags for article ${articleId}:`, error);
+        return [];
+    }
+}
+
+async function showAllArticles() {
+    try {
+        const response = await fetch('../../app/actions/blog/article/getAllJSON.php');
+        const articles = await response.json();
+        const articlesList = document.getElementById('articlesList');
+        articlesList.innerHTML = '';
+        
+        for (const article of articles) {
+            const tags = await fetchTagsForArticle(article.id);
+            const comments = await getComments(article.id)
+            console.log(comments)
+            const tagsHtml = tags.map(tag => createTagElement(tag)).join('');
+            
+            const articleCard = `
+                <div class="w-full md:w-1/2 h-auto p-4">
+                    <div class="bg-white rounded-lg h-full shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
+                        <!-- Image Container -->
+                        <div class="relative h-48 overflow-hidden">
+                            <img 
+                                src="../../app/${article.image_path}" 
+                                alt="${article.title}" 
+                                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                            />
+                        </div>
+                        
+                        <!-- Content Container -->
+                        <div class="p-6">
+                            <!-- Tags Container -->
+                            <div class="flex flex-wrap mb-3">
+                                ${tagsHtml}
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-primary">
+                                ${article.titre}
+                            </h3>
+                            
+                            <!-- Description -->
+                            <div class="text-gray-600 mb-4 line-clamp-1">
+                                ${article.description}
+                            </div>
+                            
+                            <!-- Metadata -->
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <div class="flex items-center space-x-4">
+                                    <!-- Likes -->
+                                    <div class="flex items-center space-x-1">
+                                        <button class="hover:text-primary transition-colors" onclick="likeArticle(${article.id})">
+                                            <i class="fa-regular fa-star"></i>   
+                                                     
+                                        </button>
+                                        <button class="hover:text-primary transition-colors" onclick="dislikeArticle(${article.id})">
+                                            <i class="fa-solid fa-star" style="color: #ff2465;"></i>
+                                                     
+                                        </button>
+                                        <span>${article.likes}</span>
+                                    </div>
+                                    
+                                    <!-- Comments -->
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-comment"></i>
+                                        <span>${comments.totalComments}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Date -->
+                                <div class="text-gray-400">
+                                    ${new Date(article.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Arrow Down Animated Circle -->
+                        <div class="absolute bottom-4 z-50 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 animate-bounce shadow-lg cursor-pointer">
+                                <i class="fas fa-arrow-down"></i>
                             </div>
                         </div>
                     </div>
-                `;
-
-                articlesList.appendChild(articleCard);
-
-                fetchTagsForArticle(articleCard.querySelector('.tags'), article.id);
-
-                articleCard.querySelector('.add-fav').addEventListener('click', () => addToFavorites(article.id));
-                articleCard.querySelector('.add-comment').addEventListener('click', () => addComment(article.id));
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching articles:', error);
-        });
+                </div>
+            `;
+            
+            articlesList.innerHTML += articleCard;
+        }
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+    }
 }
 
-function fetchTagsForArticle(container, articleId) {
-    fetch(`../../app/actions/blog/article/getTagsForArticle.php?articleId=${articleId}`)
-        .then(response => response.json())
-        .then(tags => {
-            container.innerHTML = ''; 
-            tags.forEach(tag => {
-                const tagSpan = document.createElement('span');
-                tagSpan.classList.add('inline-block', 'bg-gray-200', 'text-gray-800', 'px-3', 'py-1', 'rounded', 'mr-2', 'text-sm');
-                tagSpan.textContent = tag.nom;
-                container.appendChild(tagSpan);
-            });
-        })
-        .catch(error => {
-            console.error(`Error fetching tags for article ${articleId}:`, error);
-        });
-}
+
 
 showAllArticles()
 const quill = new Quill('#articleDescriptionEditor', {
@@ -94,12 +188,14 @@ const tagsInput = document.getElementById('articleTags');
 const tagsList = document.getElementById('tagsList');
 const selectedTagsContainer = document.getElementById('selectedTags');
 let selectedTags = [];
-openButton.addEventListener('click', () => modal.classList.remove('hidden'));
-closeButton.addEventListener('click', () => {
+function reserModal(){
     document.getElementById('addArticleForm').reset()
     selectedTagsContainer.innerHTML=``
     selectedTags = []
-    modal.classList.add('hidden')});
+    modal.classList.add('hidden')
+}
+openButton.addEventListener('click', () => modal.classList.remove('hidden'));
+closeButton.addEventListener('click', () => reserModal());
 
 
 
@@ -189,7 +285,9 @@ document.getElementById('addArticleForm').addEventListener('submit', function (e
     .then(data => {
         console.log(data); 
         if (data.status === 'success') {
-            alert('Article created successfully!');
+            showAllArticles();
+            reserModal();
+
         } else {
             alert(`Error: ${data.message}`);
         }

@@ -75,8 +75,8 @@ class Article {
     public function attachTag($pdo, $tagId) {
         try {
             $stmt = $pdo->prepare("INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)");
-            $stmt->execute([$this->id, $tagId]);
-            return 202;
+           $res = $stmt->execute([$this->id, $tagId]);
+            return $res;
         } catch (Exception $e) {
             return 401 . $e->getMessage();
         }
@@ -96,8 +96,8 @@ class Article {
     public static function getTagsForArticle($pdo, $articleId) {
         try {
             $stmt = $pdo->prepare("
-                SELECT t.id, t.name
-                FROM tags t
+                SELECT t.id, t.nom
+                FROM tag t
                 INNER JOIN article_tags at ON t.id = at.tag_id
                 WHERE at.article_id = :articleId
             ");
@@ -107,6 +107,9 @@ class Article {
         } catch (PDOException $e) {
             throw new Exception("Error retrieving tags for article: " . $e->getMessage());
         }
+    }
+    public function getId(){
+        return $this->id;
     }
     
 }
