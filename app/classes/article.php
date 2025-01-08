@@ -111,6 +111,52 @@ class Article {
     public function getId(){
         return $this->id;
     }
+    public static function addToFavori($pdo, $articleId,$userId) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO favori (article_id, user_id) VALUES (:article_id,:user_id)");
+            $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return 202;
+        } catch (PDOException $e) {
+            throw new Exception("Error retrieving tags for article: " . $e->getMessage());
+        }
+    }
+    public static function checkFavori($pdo, $articleId,$userId) {
+        try {
+            $stmt = $pdo->prepare("SELECT COUNT(*) as favori FROM favori where article_id = :article_id and user_id = :user_id");
+            $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Error retrieving tags for article: " . $e->getMessage());
+        }
+    }
+    public static function removeFromFavori($pdo, $articleId,$userId)
+    {
+        try {
+            $stmt = $pdo->prepare("DELETE FROM favori where article_id = :article_id and user_id = :user_id");
+            $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return 202;
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting favori article: " . $e->getMessage());
+        }
+    }
+    public static function totalLike($pdo,$articleId)
+    {
+        try {
+            $stmt = $pdo->prepare("SELECT count(*) as totalFavori from favori where article_id = :article_id ");
+            $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);;
+        } catch (PDOException $e) {
+            throw new Exception("Error fetching favori article: " . $e->getMessage());
+        }
+    }
+   
     
 }
 

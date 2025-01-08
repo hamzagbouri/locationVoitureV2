@@ -10,6 +10,7 @@ session_start();
   {
     header('Location: blog.php');
   }
+  var_dump($_SESSION['id']);
   $theme_id = $_GET['theme_id'];
   require_once '../../app/actions/blog/theme/get.php';
   $Theme = getTheme::getThemeById($theme_id);

@@ -1,32 +1,30 @@
-// Helper function to convert hex to rgba
-function hexToRgba(hex, alpha = 0.2) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
+function likeArticle(articleId)
+{
+    fetch(`../../app/actions/blog/article/addToFavori.php?articleId=${articleId}`)
+    .then(response=>response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showAllArticles();
+        }
+
+    })
+}
+function dislikeArticle(articleId)
+{
+    fetch(`../../app/actions/blog/article/removeFromFavori.php?articleId=${articleId}`)
+    .then(response=>response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showAllArticles();
+        }
+
+    })
 }
 
-function getTagColor(tagName) {
-    const colors = {
-        'Luxury': '#3B82F6',
-        'Sports': '#10B981',
-        'Electric': '#8B5CF6',
-        'Vintage': '#F59E0B',
-        'SUV': '#EC4899',
-    };
-    
-    if (!colors[tagName]) {
-        // Generate a random color for unspecified tags
-        const randomHue = Math.floor(Math.random() * 360); // Random hue between 0 and 359
-        return `hsl(${randomHue}, 70%, 50%)`;
-    }
-    
-    return colors[tagName];
-}
 
 function createTagElement(tag) {
-    const color = getTagColor(tag.nom);
-    console.log("hes",hexToRgba(color))
+
     return `
         <span 
             class="inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2"
@@ -58,7 +56,18 @@ async function getComments(articleId) {
         return [];
     }
 }
-
+async function checkFavori(articleId)
+{
+    try {
+        const response = await fetch(`../../app/actions/blog/article/addToFavori.php?checkId=${articleId}`);
+        const favori = await response.json();
+      
+        return favori;
+    }catch (error) {
+        console.error(`Error fetching tags for article ${articleId}:`, error);
+        return [];
+    }
+}
 async function showAllArticles() {
     try {
         const response = await fetch('../../app/actions/blog/article/getAllJSON.php');
@@ -69,6 +78,8 @@ async function showAllArticles() {
         for (const article of articles) {
             const tags = await fetchTagsForArticle(article.id);
             const comments = await getComments(article.id)
+            const favori = await checkFavori(article.id)
+           
             console.log(comments)
             const tagsHtml = tags.map(tag => createTagElement(tag)).join('');
             
@@ -105,14 +116,16 @@ async function showAllArticles() {
                                 <div class="flex items-center space-x-4">
                                     <!-- Likes -->
                                     <div class="flex items-center space-x-1">
+                                    ${favori.favori == 0 ? `
                                         <button class="hover:text-primary transition-colors" onclick="likeArticle(${article.id})">
-                                            <i class="fa-regular fa-star"></i>   
-                                                     
+                                            <i class="fa-regular fa-star"></i>
                                         </button>
+                                    ` : `
                                         <button class="hover:text-primary transition-colors" onclick="dislikeArticle(${article.id})">
                                             <i class="fa-solid fa-star" style="color: #ff2465;"></i>
-                                                     
                                         </button>
+                                    `}
+                                    
                                         <span>${article.likes}</span>
                                     </div>
                                     
