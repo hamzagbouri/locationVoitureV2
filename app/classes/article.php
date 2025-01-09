@@ -71,6 +71,29 @@ class Article {
             return 406 . $e->getMessage();
         }
     }
+    public static function getAllArticlesByTheme($pdo,$themeId) {
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM Article where theme_id = :themeId");
+            $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (Exception $e) {
+            return 406 . $e->getMessage();
+        }
+    }
+    public static function getAllArticlesByThemeAndTag($pdo,$themeId,$tagId) {
+        try {
+            $stmt = $pdo->prepare("SELECT a.* FROM Article a INNER JOIN article_tags art ON art.article_id = a.id  WHERE a.theme_id = :themeId AND art.tag_id = :tagId;");
+            $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
+            $stmt->bindParam(':tagId', $tagId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (Exception $e) {
+            return 406 . $e->getMessage();
+        }
+    }
 
     public function attachTag($pdo, $tagId) {
         try {
@@ -92,7 +115,20 @@ class Article {
         }
     }
 
-
+    public static function searchArticleByTitre($pdo, $titre,$themeId)
+    {
+    try {
+        $titreWithWildcards = "%" . $titre . "%";
+        
+        $stmt = $pdo->prepare("SELECT * FROM article WHERE titre LIKE ? and theme_id = ?");
+        $stmt->execute([$titreWithWildcards,$themeId]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    } catch (Exception $e) {
+        return ['error' => 405, 'message' => $e->getMessage()];
+    }
+    }
     public static function getTagsForArticle($pdo, $articleId) {
         try {
             $stmt = $pdo->prepare("

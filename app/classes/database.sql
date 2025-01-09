@@ -115,3 +115,7 @@ CREATE TABLE Favori (
     FOREIGN KEY (user_id) REFERENCES User(id)
 
 );
+DELETE t1
+FROM tag t1
+JOIN tag t2
+ON t1.nom = t2.nom AND t1.id > t2.id;

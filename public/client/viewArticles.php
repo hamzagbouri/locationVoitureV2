@@ -10,7 +10,7 @@ session_start();
   {
     header('Location: blog.php');
   }
-  var_dump($_SESSION['id']);
+ 
   $theme_id = $_GET['theme_id'];
   require_once '../../app/actions/blog/theme/get.php';
   $Theme = getTheme::getThemeById($theme_id);
@@ -122,7 +122,7 @@ session_start();
                         </div>
         </nav>
         <div class="h-72 w-[100%] flex p-8 items-center justify-center ">
-                <p class="text-[50px]"><?php echo $Theme['nom']?></p>
+                <p id="theme" class="text-[50px]" data-id= <?php echo $theme_id ?>><?php echo $Theme['nom']?></p>
         </div>
 
     </header>
@@ -158,9 +158,12 @@ session_start();
                class="px-4 py-2 rounded-xl border border-gray-300"
            >
                <option value="">Select a tag</option>
-               <option value="Tag1">Tag1</option>
-               <option value="Tag2">Tag2</option>
-               <option value="Tag3">Tag3</option>
+                <?php
+                foreach ($tags as $tag)
+                {
+                    echo "<option value='".$tag['id']."'>".$tag['nom']."</option>";
+                }
+                ?>
            </select>
         </div>
     </div>

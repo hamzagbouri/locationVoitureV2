@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' ) {
         $res = Article::checkFavori($pdo,$articleIed,$user_id);
         echo json_encode($res); 
 } else if (isset($_GET['totalFavori'])) {
-    $articleIed = $_GET['checkId'];
-    $res = Article::checkFavori($pdo,$articleIed,$user_id);
+    $articleIed = $_GET['totalFavori'];
+    $res = Article::totalLike($pdo,$articleIed);
     echo json_encode($res); 
 } 
 }catch (Exception $e) {

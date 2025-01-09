@@ -57,7 +57,7 @@ class Tag {
 
     public static function getAllTags($pdo) {
         try {
-            $stmt = $pdo->query("SELECT * FROM Tag");
+            $stmt = $pdo->query("SELECT * FROM Tag ORDER BY nom");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             return 406 . $e->getMessage();
