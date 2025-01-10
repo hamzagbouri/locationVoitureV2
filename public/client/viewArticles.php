@@ -14,7 +14,6 @@ session_start();
   $theme_id = $_GET['theme_id'];
   require_once '../../app/actions/blog/theme/get.php';
   $Theme = getTheme::getThemeById($theme_id);
-  require_once '../../app/actions/blog/article/get.php';
   require_once '../../app/actions/blog/tag/get.php';
   $tags = getTag::getAllTags();
 
@@ -170,8 +169,38 @@ session_start();
 
     <!-- Themes List -->
     <div id="articlesList" class="flex flex-wrap -mx-4">
-     
+    <!-- Les articles seront affichés ici -->
+</div>
+
+<!-- Pagination et Sélecteur -->
+<div class="mt-6 flex justify-between items-center">
+    <!-- Sélecteur pour le nombre d'articles par page -->
+     <div></div>
+    <!-- Pagination -->
+    <nav aria-label="Pagination" class="flex items-center space-x-2">
+        <div id="paginationPages" class="flex space-x-2">
+            <!-- Exemple de pages -->
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100">
+                1
+            </button>
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100">
+                2
+            </button>
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100">
+                3
+            </button>
+        </div>
+    </nav>
+    <div class="flex items-center space-x-2">
+        <label for="articlesPerPage" class="text-sm font-medium text-gray-700">Afficher par :</label>
+        <select id="articlesPerPage" class="block w-24 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
     </div>
+</div>
+
 </div>
 
 <!-- Add Article Modal -->

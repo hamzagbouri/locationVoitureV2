@@ -119,3 +119,12 @@ DELETE t1
 FROM tag t1
 JOIN tag t2
 ON t1.nom = t2.nom AND t1.id > t2.id;
+CREATE VIEW CommantaireView AS
+SELECT c.id , c.article_id, c.Commantaire,u.fullName,c.createdAt
+FROM Commantaire c
+JOIN user u ON u.id = c.user_id;
+
+CREATE VIEW articleView AS
+SELECT c.*,u.fullName 
+FROM article c
+JOIN user u ON u.id = c.client_id;

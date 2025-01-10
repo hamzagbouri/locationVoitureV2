@@ -59,7 +59,7 @@
 require_once __DIR__ . '/../../../classes/article.php';
 require_once __DIR__ . '/../../../classes/tag.php';
 require_once __DIR__ . '/../../../classes/database.php';
-
+session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $dbInstance = Database::getInstance();
@@ -78,10 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             throw new Exception("Error uploading image: " . $_FILES['image']['error']);
         }
+        $clientId = $_SESSION['id'];
         $themeId = $_POST['themeId'];
         $titre = $_POST['title'];
         $description = $_POST['description'];
-        $article = new Article(null,$uploadFile,$titre,$description,$themeId);
+        $article = new Article(null,$uploadFile,$titre,$description,$themeId,$clientId);
       
         $article->createArticle($pdo); 
 
@@ -108,4 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
+
 ?>

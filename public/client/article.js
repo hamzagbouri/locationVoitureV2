@@ -2,6 +2,13 @@
 const themeId = document.getElementById('theme').dataset.id 
 const tagFilter = document.getElementById('tagFilter')
 const searchInput = document.getElementById("search")
+const articlesPerPage = document.getElementById('articlesPerPage');
+const paginationPage = document.getElementById('paginationPages')
+let nbrArticlePerPage = articlesPerPage.value
+articlesPerPage.addEventListener('change',function (){
+    nbrArticlePerPage = articlesPerPage.value 
+    showAllArticles(themeId)
+})
 function likeArticle(articleId)
 {
     fetch(`../../app/actions/blog/article/addToFavori.php?articleId=${articleId}`)
@@ -74,7 +81,7 @@ async function getComments(articleId) {
     try {
         const response = await fetch(`../../app/actions/blog/commantaire/get.php?articleId=${articleId}`);
         const comments = await response.json();
-        console.log(comments)
+
         return comments;
     } catch (error) {
         console.error(`Error fetching tags for article ${articleId}:`, error);
@@ -83,10 +90,10 @@ async function getComments(articleId) {
 }
 async function getTotalLike(articleId) {
     try {
-        console.log("ana hna")
+
         const response = await fetch(`../../app/actions/blog/article/addToFavori.php?totalFavori=${articleId}`);
         const totalLike = await response.json();
-        console.log("like",totalLike)
+
                 return totalLike;
     } catch (error) {
         console.error(`Error fetching tags for article ${articleId}:`, error);
@@ -105,11 +112,35 @@ async function checkFavori(articleId)
         return [];
     }
 }
+async function pageArticle(pageNumber)
+{
+    console.log(pageNumber)
+}
+async function showArtclies(articles){
+
+    fetch(`../../app/actions/blog/article/getCount.php?themeId=${themeId}`)
+    .then(response => response.json())
+    .then(data=> {
+        const totalPages = Math.ceil(data.totalArticles /articlesPerPage.value);
+        console.log("total pages",totalPages)
+        paginationPage.innerHTML=``
+        for(let i = 1 ; i<= totalPages ;i++)
+        {
+            paginationPage.innerHTML+=`<button onclick='showAllArticles(${themeId},${i})' class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100">
+                    ${i}
+                </button>`
+            
+        }
+        showArticlesHtml(articles)
+    })
+
+
+}
 async function showArticlesHtml(articles)
 {
     const articlesList = document.getElementById('articlesList');
     articlesList.innerHTML = '';
-    console.log('articles',articles)
+ 
     for (const article of articles) {
         const tags = await fetchTagsForArticle(article.id);
         const comments = await getComments(article.id)
@@ -182,7 +213,7 @@ async function showArticlesHtml(articles)
                     <!-- Arrow Down Animated Circle -->
                     <div class="absolute bottom-4 z-50 left-1/2 transform -translate-x-1/2 translate-y-1/2">
                         <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 animate-bounce shadow-lg cursor-pointer">
-                            <i class="fas fa-arrow-down"></i>
+                            <a href='viewComments.php?article_id=${article.id}'><i class="fas fa-arrow-down"></i></a>
                         </div>
                     </div>
                 </div>
@@ -192,12 +223,25 @@ async function showArticlesHtml(articles)
         articlesList.innerHTML += articleCard;
     }
 }
-async function showAllArticles(themeId) {
+async function showAllArticles(themeIsd,start = null) {
     try {
+        console.log('start', start)
+        if(!start)
+        {
+            start = 1
+        }
+      
+        limit = nbrArticlePerPage
+        
+        console.log("limit",limit)
+        themeIsd = themeId
+        startIndex = (start-1) * limit;
+        console.log('axd',startIndex)
+    
        
-        const response = await fetch(`../../app/actions/blog/article/getAllJSON.php?themeId=${themeId}`);
+        const response = await fetch(`../../app/actions/blog/article/getCustomArticle.php?themeId=${themeIsd}&start=${startIndex}&limit=${limit}`);
         const articles = await response.json();
-        showArticlesHtml(articles)
+        showArtclies(articles)
     } catch (error) {
         console.error('Error fetching articles:', error);
     }

@@ -7,19 +7,21 @@ class Article {
     private $description;
     private $status;
     private $themeId;
+    private $client_id;
 
-    public function __construct($id = null, $imagePath = null, $titre = null, $description = null,  $themeId = null) {
+    public function __construct($id = null, $imagePath = null, $titre = null, $description = null,  $themeId = null,$client_id=null) {
         $this->id = $id;
         $this->imagePath = $imagePath;
         $this->titre = $titre;
         $this->description = $description;
         $this->themeId = $themeId;
+        $this->client_id = $client_id;
     }
 
     public function createArticle($pdo) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO Article (image_path, titre, description, theme_id) VALUES (?, ?,  ?, ?)");
-            $stmt->execute([$this->imagePath, $this->titre, $this->description, $this->themeId]);
+            $stmt = $pdo->prepare("INSERT INTO Article (image_path, titre, description, theme_id,client_id) VALUES (?, ?,  ?, ?,?)");
+            $stmt->execute([$this->imagePath, $this->titre, $this->description, $this->themeId,$this->client_id]);
             $this->id = $pdo->lastInsertId();
             return 202;
         } catch (Exception $e) {
@@ -55,7 +57,7 @@ class Article {
 
     public static function getArticleById($pdo, $id) {
         try {
-            $stmt = $pdo->prepare("SELECT * FROM Article WHERE id = ?");
+            $stmt = $pdo->prepare("SELECT * FROM articleView WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -181,6 +183,32 @@ class Article {
             throw new Exception("Error deleting favori article: " . $e->getMessage());
         }
     }
+    public static function getCustomArticles($pdo,$themeId,$limit,$start)
+    {
+ 
+
+     try {
+         
+         $stmt = $pdo->prepare("SELECT * FROM Article where theme_id = :themeId LIMIT :limit OFFSET :offset ");
+
+        
+         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+         $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
+         $stmt->bindParam(':offset', $start, PDO::PARAM_INT);
+     
+         $stmt->execute();
+     
+
+         
+         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+         return $results;
+         
+     } catch (Exception $e ) {
+         return $e->getMessage();
+
+     }
+    }
     public static function totalLike($pdo,$articleId)
     {
         try {
@@ -192,7 +220,19 @@ class Article {
             throw new Exception("Error fetching favori article: " . $e->getMessage());
         }
     }
-   
+   public static function getCountArticle($pdo,$themeId)
+   {
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as totalArticles from article where theme_id = :themeId");
+        $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        
+    } catch (Exception $e ) {
+        return 401;
+
+    }
+   }
     
 }
 

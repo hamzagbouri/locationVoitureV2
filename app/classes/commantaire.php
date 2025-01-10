@@ -59,9 +59,9 @@ class Commantaire {
 
     public static function getCommentairesForArticle($pdo, $articleId) {
         try {
-            $stmt = $pdo->prepare("SELECT count(*) as totalComments,c.* FROM Commantaire c WHERE article_id = ?");
-            $stmt->execute([$articleId]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $pdo->prepare("SELECT c.*, totalComments.total FROM CommantaireView c CROSS JOIN (SELECT COUNT(*) AS total  FROM CommantaireView WHERE article_id = ? ) AS totalComments WHERE c.article_id = ?   ");
+            $stmt->execute([$articleId,$articleId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             return [];
         }
