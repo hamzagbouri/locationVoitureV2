@@ -102,6 +102,7 @@ session_start();
 </head>
 <body class="w-full h-full min-h-screen text-white  ">
 <header class="bg-[url('../image/bg22.png')] bg-cover h-[40%] bg-no-repeat object-fit font-primary " >
+    <input type="hidden" id="clientId" value = <?php echo $_SESSION['id']?>>
         <nav class="w-full h-[40%] sticky  flex overflow-hidden items-center justify-around">
             <div class="h-full flex items-center h-full ">
                 <img class="w-28 h-16 " src="../image/logo2.png" alt="">
@@ -155,6 +156,17 @@ session_start();
         <!-- Example Comments -->
         <div id="comment-container" class="space-y-6 text-black">
             
+        </div>
+    </div>
+</div>
+<!-- Edit Comment Modal -->
+<div id="editCommentModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center text-black">
+    <div class="bg-white p-6 rounded-lg w-1/3">
+        <h3 class="text-xl font-semibold mb-4">Edit Comment</h3>
+        <textarea id="editCommentTextarea" class="w-full p-2 border border-gray-300 rounded mb-4" rows="4"></textarea>
+        <div class="flex justify-end gap-2">
+            <button onclick="hideEditModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+            <button onclick="submitEdit()" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
         </div>
     </div>
 </div>

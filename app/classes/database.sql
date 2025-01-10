@@ -120,7 +120,7 @@ FROM tag t1
 JOIN tag t2
 ON t1.nom = t2.nom AND t1.id > t2.id;
 CREATE VIEW CommantaireView AS
-SELECT c.id , c.article_id, c.Commantaire,u.fullName,c.createdAt
+SELECT c.*,u.fullName
 FROM Commantaire c
 JOIN user u ON u.id = c.user_id;
 
