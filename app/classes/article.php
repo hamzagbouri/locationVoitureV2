@@ -64,16 +64,37 @@ class Article {
             return 404 . $e->getMessage();
         }
     }
+    public static function updateStatus($pdo,$articleId,$newStatus)
+    {
+        try {
+            $stmt = $pdo->prepare("UPDATE Article SET status = ? WHERE id = ?");
+            $stmt->execute([$newStatus,$articleId]);
+            return 202;
+        } catch (Exception $e) {
+            return 402 . $e->getMessage();
+        }
+    }
 
     public static function getAllArticles($pdo) {
         try {
-            $stmt = $pdo->query("SELECT * FROM Article");
+            $stmt = $pdo->query("SELECT * FROM articleView");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             return 406 . $e->getMessage();
         }
     }
     public static function getAllArticlesByTheme($pdo,$themeId) {
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM articleView where theme_id = :themeId");
+            $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (Exception $e) {
+            return 406 . $e->getMessage();
+        }
+    }
+    public static function getAllArticlesByThemeAdmin($pdo,$themeId) {
         try {
             $stmt = $pdo->prepare("SELECT * FROM Article where theme_id = :themeId");
             $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
@@ -86,7 +107,7 @@ class Article {
     }
     public static function getAllArticlesByThemeAndTag($pdo,$themeId,$tagId) {
         try {
-            $stmt = $pdo->prepare("SELECT a.* FROM Article a INNER JOIN article_tags art ON art.article_id = a.id  WHERE a.theme_id = :themeId AND art.tag_id = :tagId;");
+            $stmt = $pdo->prepare("SELECT a.* FROM articleView a INNER JOIN article_tags art ON art.article_id = a.id  WHERE a.theme_id = :themeId AND art.tag_id = :tagId;");
             $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
             $stmt->bindParam(':tagId', $tagId, PDO::PARAM_INT);
             $stmt->execute();
@@ -122,7 +143,7 @@ class Article {
     try {
         $titreWithWildcards = "%" . $titre . "%";
         
-        $stmt = $pdo->prepare("SELECT * FROM article WHERE titre LIKE ? and theme_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM articleView WHERE titre LIKE ? and theme_id = ?");
         $stmt->execute([$titreWithWildcards,$themeId]);
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -189,7 +210,7 @@ class Article {
 
      try {
          
-         $stmt = $pdo->prepare("SELECT * FROM Article where theme_id = :themeId LIMIT :limit OFFSET :offset ");
+         $stmt = $pdo->prepare("SELECT * FROM articleView where theme_id = :themeId  LIMIT :limit OFFSET :offset ");
 
         
          $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);

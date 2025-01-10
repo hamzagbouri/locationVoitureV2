@@ -127,4 +127,4 @@ JOIN user u ON u.id = c.user_id;
 CREATE VIEW articleView AS
 SELECT c.*,u.fullName 
 FROM article c
-JOIN user u ON u.id = c.client_id;
+JOIN user u ON u.id = c.client_id where c.status = 'Accepted';

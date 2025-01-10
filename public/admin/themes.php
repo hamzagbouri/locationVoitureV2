@@ -235,7 +235,7 @@ $allThemes = getTheme::getAllTheme();
       
             <!-- Bouton View Articles -->
             <a
-                href="view_articles.php?theme_id=<?= $theme['id']; ?>"
+                href="articles.php?themeId=<?= $theme['id']; ?>"
                 class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
             >
                 View Articles

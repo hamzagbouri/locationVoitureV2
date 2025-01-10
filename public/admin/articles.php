@@ -211,155 +211,47 @@ $allCategories = getCategory::getAllCategories();
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach($allCategories as $category){ ?>
-
-            <div
-              class="bg-white rounded-lg shadow-md p-6 flex justify-between items-center"
-            >
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold text-gray-800">
-                  <?php echo $category['nom']; ?>
-                </h3>
-              </div>
-              <div class="flex gap-4">
-                <button
-                  onclick="openEditModal(<?= htmlspecialchars(json_encode($category)) ?>)"
-                >
-                  <img src="./img/editinggh.png" alt="Edit" class="w-5 h-5" />
-                </button>
-
-                <a
-                  href="../../app/actions/deleteCategory.php?id=<?php echo $category['id']; ?>"
-                  ><img src="./img/delete.png" alt="Delete" class="w-5 h-5"
-                /></a>
-              </div>
+          <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-800">
+            Articles List
+            <span class="ml-2 text-sm font-normal text-gray-500">(Showing 10 of 24)</span>
+        </h2>
+        
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="Search articles..." 
+                       class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" 
+                     fill="none" 
+                     stroke="currentColor" 
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
             </div>
-            <?php } ?>
-          </div>
+            
+            <select class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="all">All Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+                <option value="hidden">Hidden</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Articles will be populated here by JavaScript -->
+    </div>
+</div>
+
         </section>
       </div>
 
-      <div
-        id="categoryModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-white rounded-lg w-96 p-6">
-          <h2 class="text-2xl font-semibold mb-4">Add New Category</h2>
-          <form
-            id="categoryForm"
-            method="POST"
-            action="../../app/actions/addCategory.php"
-          >
-            <label
-              for="categoryName"
-              class="block text-sm font-medium text-gray-700"
-              >Category Name</label
-            >
-            <input
-              type="text"
-              id="categoryName"
-              name="nom-category"
-              class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter category name"
-              required
-            />
-            <div class="mt-6 flex justify-end gap-4">
-              <button
-                type="button"
-                id="closeModal"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                name="submit"
-                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-              >
-                Add Category
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div
-        id="categoryModal-edit"
-        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-white rounded-lg w-96 p-6">
-          <h2 class="text-2xl font-semibold mb-4">Modify Category</h2>
-          <form
-            id="categoryForm-edit"
-            method="POST"
-            action="../../app/actions/editCategory.php"
-          >
-          <input
-              type="hidden"
-              id="id-category-edit"
-              name="id-category-edit"
-              
-            />
-            <label
-              for="nom-category-edit"
-              class="block text-sm font-medium text-gray-700"
-              >Category Name</label
-            >
-            <input
-              type="text"
-              id="nom-category-edit"
-              name="nom-category-edit"
-              class="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter category name"
-              required
-            />
-            <div class="mt-6 flex justify-end gap-4">
-              <button
-                type="button"
-                id="closeModal-edit"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                name="submit"
-                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-              >
-                Modify Category
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-    <script>
-      const modalEdit = document.getElementById("categoryModal-edit");
-      const modal = document.getElementById("categoryModal");
-      const addCategoryButton = document.getElementById("add-etd");
-      const closeModalButton = document.getElementById("closeModal");
-      const categoryForm = document.getElementById("categoryForm");
-
-      addCategoryButton.addEventListener("click", () => {
-        modal.classList.remove("hidden");
-      });
-
-      closeModalButton.addEventListener("click", () => {
-        modal.classList.add("hidden");
-      });
-
-      window.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.add("hidden");
-        }
-      });
-      function openEditModal(category){
-        modalEdit.classList.remove("hidden");
-        document.getElementById("nom-category-edit").value = category.nom;
-        document.getElementById("id-category-edit").value = category.id;
-      }
-      document.getElementById("closeModal-edit").addEventListener("click", () => {
-        modalEdit.classList.add("hidden");
-      });
-    </script>
+    <script src="article.js"></script>
   </body>
 </html>
